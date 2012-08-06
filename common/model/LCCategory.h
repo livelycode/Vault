@@ -2,10 +2,14 @@
 #import <Foundation/Foundation.h>
 
 #import "LCManagedObject.h"
+@class LCEntry;
 
 @interface LCCategory : NSObject <LCManagedObject>
-@property (readonly, strong) NSDictionary *fields; // keys are UUIDs
+@property (readonly) NSDictionary *fields; // keys are UUIDs
 @property (readwrite, strong) NSString *name;
-- (void)addField:(NSString *)name withID:(NSUUID *)objectID;
-- (void)removeFieldWithID:(NSUUID *)objectID;
+@property (readonly) NSArray *entries;
+- (void)addField:(NSString *)name withID:(NSString *)objectID;
+- (void)removeFieldWithID:(NSString *)objectID;
+- (void)addEntry:(LCEntry *)entry;
+- (void)removeEntry:(LCEntry *)entry;
 @end

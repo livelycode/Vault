@@ -1,9 +1,10 @@
 
 #import <Foundation/Foundation.h>
+@class LCStore;
 
 @protocol LCManagedObject <NSObject>
 @required
-@property (readonly, weak) NSUUID *objectID;
-@property (readonly, weak) NSData *data;
-- (void)updateWithData:(NSData *)data;
+- (NSString *)objectID;
+- (NSData *)serialize;
+- (void)deserializeWithData:(NSData *)data store:(LCStore *)store;
 @end

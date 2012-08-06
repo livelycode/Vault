@@ -3,6 +3,7 @@
 
 typedef void (^LCKeyDataBlock)(NSString *key, NSData *data);
 typedef void (^LCKeyBlock)(NSString *key);
+@protocol LCManagedObject;
 
 @interface LCEntity : NSObject
 - (void)registerAddBlock:(LCKeyDataBlock)block withID:(NSUUID *)id;
@@ -11,6 +12,5 @@ typedef void (^LCKeyBlock)(NSString *key);
 - (void)unregisterAddBlockWithID:(NSUUID *)id;
 - (void)unregisterUpdateBlockWithID:(NSUUID *)id;
 - (void)unregisterDeleteBlockWithID:(NSUUID *)id;
-- (void)setValue:(NSData *)value forKey:(NSString *)key;
-- (void)removeKey:(NSString *)key;
+- (id <LCManagedObject>)valueForKey:(NSString *)key;
 @end
