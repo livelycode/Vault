@@ -1,7 +1,7 @@
 
 #import <Foundation/Foundation.h>
-#import "LCManagedObjectProtocol.h"
+#import "LCEntityProtocol.h"
 
-@interface LCManagedObject : NSObject <LCManagedObject>
+@interface LCManagedObject : NSObject <LCEntity>
 
 @end

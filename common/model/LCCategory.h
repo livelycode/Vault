@@ -1,6 +1,6 @@
 
 #import <Foundation/Foundation.h>
-#import "LCManagedObjectProtocol.h"
+#import "LCEntityProtocol.h"
 #import "LCManagedObject.h"
 
 @class LCEntry;

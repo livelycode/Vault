@@ -1,18 +1,17 @@
 
 #import <Foundation/Foundation.h>
-#import "LCEntity.h"
 
-@protocol LCManagedObject;
+@protocol LCEntity;
 
-typedef id <LCManagedObject>(^LCStoreCreateBlock)();
+typedef id <LCEntity>(^LCStoreCreateBlock)();
 typedef void(^LCStoreSubscribeBlock)();
 
 @interface LCStore : NSObject
 + (id)storeWithURL:(NSURL *)url;
-- (id <LCManagedObject>)createObjectWithConstructor:(LCStoreCreateBlock)block;
-- (void)updateObject:(id <LCManagedObject>)object;
-- (void)deleteObject:(id <LCManagedObject>)object;
+- (id <LCEntity>)createObjectWithConstructor:(LCStoreCreateBlock)block;
+- (void)updateObject:(id <LCEntity>)object;
+- (void)deleteObject:(id <LCEntity>)object;
 - (NSSet *)objectsOfClass:(Class)aClass;
-- (id <LCManagedObject>)objectForID:(NSString *)objectID;
-- (void)subscribeToObject:(id <LCManagedObject>)object updateBlock:(LCStoreSubscribeBlock)block deleteBlock:(LCStoreSubscribeBlock)block;
+- (id <LCEntity>)objectForID:(NSString *)objectID;
+- (void)subscribeToObject:(id <LCEntity>)object updateBlock:(LCStoreSubscribeBlock)block deleteBlock:(LCStoreSubscribeBlock)block;
 @end

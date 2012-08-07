@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 @class LCStore;
 
-@protocol LCManagedObject <NSObject>
+@protocol LCEntity <NSObject>
 @required
 + (id)objectWithID:(NSString *)objectID data:(NSData *)data store:(LCStore *)store;
 - (NSString *)objectID;

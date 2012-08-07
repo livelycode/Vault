@@ -2,7 +2,6 @@
 #import "LCCategory.h"
 #import "LCUtils.h"
 #import "LivelyBlocks.h"
-#import "LCEntity.h"
 #import "LCStore.h"
 #import "LCEntry.h"
 
