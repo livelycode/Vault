@@ -1,3 +1,0 @@
-[submodule "common/external/LivelyBlocks"]
-	path = common/external/LivelyBlocks
-	url = git@github.com:livelycode/LivelyBlocks.git
