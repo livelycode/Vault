@@ -8,6 +8,7 @@ typedef id <LCManagedObject>(^LCStoreCreateBlock)();
 typedef void(^LCStoreSubscribeBlock)();
 
 @interface LCStore : NSObject
++ (id)storeWithURL:(NSURL *)url;
 - (id <LCManagedObject>)createObjectWithConstructor:(LCStoreCreateBlock)block;
 - (void)updateObject:(id <LCManagedObject>)object;
 - (void)deleteObject:(id <LCManagedObject>)object;
