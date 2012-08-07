@@ -1,6 +1,5 @@
 
 #import <Foundation/Foundation.h>
-
 #import "LCManagedObjectProtocol.h"
 
 @interface LCEntry : NSObject <LCManagedObject>
