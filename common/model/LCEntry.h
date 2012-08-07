@@ -1,7 +1,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "LCManagedObject.h"
+#import "LCManagedObjectProtocol.h"
 
 @interface LCEntry : NSObject <LCManagedObject>
 @property (readonly, strong) NSDictionary *fields;
