@@ -4,18 +4,14 @@
 
 @protocol LCManagedObject;
 
-typedef id(^LCStoreCreateBlock)();
-enum LCStoreChangeType {
-  LCStoreObjectUpdated,
-  LCStoreObjectDeleted
-  };
+typedef id <LCManagedObject>(^LCStoreCreateBlock)();
 typedef void(^LCStoreSubscribeBlock)();
 
 @interface LCStore : NSObject
-- (LCEntity *)entityWithClass:(Class)aClass;
-- (id <LCManagedObject>)createManagedObjectWithConstructor:(LCStoreCreateBlock)block;
-- (void)updateManagedObject:(id <LCManagedObject>)object;
-- (void)deleteManagedObject:(id <LCManagedObject>)object;
-- (void)subscribeToObjectID:(NSString *)id withEntity:(NSString *)entity
-  updateBlock:(LCStoreSubscribeBlock)block deleteBlock:(LCStoreSubscribeBlock) block;
+- (id <LCManagedObject>)createObjectWithConstructor:(LCStoreCreateBlock)block;
+- (void)updateObject:(id <LCManagedObject>)object;
+- (void)deleteObject:(id <LCManagedObject>)object;
+- (NSSet *)objectsOfClass:(Class)aClass;
+- (id <LCManagedObject>)objectForID:(NSString *)objectID;
+- (void)subscribeToObject:(id <LCManagedObject>)object updateBlock:(LCStoreSubscribeBlock)block deleteBlock:(LCStoreSubscribeBlock)block;
 @end
