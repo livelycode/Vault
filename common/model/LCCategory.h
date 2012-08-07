@@ -1,10 +1,11 @@
 
 #import <Foundation/Foundation.h>
 #import "LCManagedObjectProtocol.h"
+#import "LCManagedObject.h"
 
 @class LCEntry;
 
-@interface LCCategory : NSObject <LCManagedObject>
+@interface LCCategory : LCManagedObject
 @property (readonly) NSDictionary *fields; // keys are UUIDs
 @property (readwrite, strong) NSString *name;
 @property (readonly) NSArray *entries;

@@ -5,7 +5,6 @@
 @interface LCEntry() {
   NSMutableDictionary *_fields;
 }
-@property (readwrite, strong) NSString *objectID;
 
 @end
 
@@ -15,7 +14,6 @@
   self = [super init];
   if (self != nil) {
     _fields = [NSMutableDictionary dictionary];
-    self.objectID = [[NSUUID UUID] UUIDString];
   }
   return self;
 }

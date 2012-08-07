@@ -10,19 +10,16 @@
   NSMutableDictionary *_fields;
   NSMutableArray *_entries;
 }
-@property (readwrite, strong) NSString *objectID;
 
 @end
 
 @implementation LCCategory
-@synthesize objectID;
 
 - (id)init {
   self = [super init];
   if (self != nil) {
     _fields = [NSMutableDictionary dictionary];
     _entries = [NSMutableArray array];
-    self.objectID = [[NSUUID UUID] UUIDString];
   }
   return self;
 }
@@ -36,9 +33,9 @@
     return [each objectID];
   }];
   NSDictionary *data = @{
-  @"name": self.name,
-  @"fields": _fields,
-  @"entries": objectIDs
+    @"name": self.name,
+    @"fields": _fields,
+    @"entries": objectIDs
   };
   return LCCreateSerializedPropertyList(data);
 }
@@ -48,10 +45,10 @@
   self.name = obj[@"name"];
   _fields = [NSMutableDictionary dictionaryWithDictionary:obj[@"fields"]];
   NSArray *entryIDs = obj[@"entries"];
-  LCEntity *entryEntity = [store entityWithClass:[LCEntry class]];
   NSArray *entries = [entryIDs collect:^id(id each) {
-    entryEntity 
+    return [store objectForID:each];
   }];
+  _entries = [NSMutableArray arrayWithArray:entries];
 }
 
 - (void)addField:(NSString *)name withID:(NSString *)fieldID {
