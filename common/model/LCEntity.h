@@ -2,6 +2,6 @@
 #import <Foundation/Foundation.h>
 #import "LCEntityProtocol.h"
 
-@interface LCManagedObject : NSObject <LCEntity>
+@interface LCEntity : NSObject <LCEntity>
 
 @end

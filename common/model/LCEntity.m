@@ -1,11 +1,11 @@
 
-#import "LCManagedObject.h"
-@interface LCManagedObject()
+#import "LCEntity.h"
+@interface LCEntity()
 @property (readwrite, strong) NSString *objectID;
 - (id)initWithID:(NSString *)objectID;
 @end
 
-@implementation LCManagedObject
+@implementation LCEntity
 @synthesize objectID;
 
 + (id)objectWithID:(NSString *)objectID data:(NSData *)data store:(LCStore *)store {
