@@ -35,12 +35,12 @@
   return LCCreateSerializedPropertyList(_categories);
 }
 
-- (void)deserializeWithData:(NSData *)data store:(LCStore *)store {
+- (void)deserializeWithData:(NSData *)data store:(LCStore *)store completionHandler:(LCNotifyBlock)completionHandler {
   NSArray *deserializedData = LCCreateDeserializedPropertyList(data);
-  NSArray *deserializedArray = [deserializedData collect:^id(id each) {
-    return [store objectForID:each];
+  [store objectsForIDs:deserializedData completionHandler:^(NSArray *objects) {
+    _categories = [NSMutableArray arrayWithArray:objects];
+    completionHandler();
   }];
-  _categories = [NSMutableArray arrayWithArray:deserializedArray];
 }
 
 @end

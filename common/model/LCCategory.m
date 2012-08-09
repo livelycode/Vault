@@ -39,15 +39,15 @@
   return LCCreateSerializedPropertyList(data);
 }
 
-- (void)deserializeWithData:(NSData *)data store:(LCStore *)store {
+- (void)deserializeWithData:(NSData *)data store:(LCStore *)store completionHandler:(LCNotifyBlock)completionHandler {
   NSDictionary *obj = LCCreateDeserializedPropertyList(data);
   self.name = obj[@"name"];
   _fields = [NSMutableDictionary dictionaryWithDictionary:obj[@"fields"]];
   NSArray *entryIDs = obj[@"entries"];
-  NSArray *entries = [entryIDs collect:^id(id each) {
-    return [store objectForID:each];
+  [store objectsForIDs:entryIDs completionHandler:^(NSArray *objects) {
+    _entries = [NSMutableArray arrayWithArray:objects];
+    completionHandler();
   }];
-  _entries = [NSMutableArray arrayWithArray:entries];
 }
 
 - (void)addField:(NSString *)name withID:(NSString *)fieldID {

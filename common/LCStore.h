@@ -1,15 +1,20 @@
 
 #import <Foundation/Foundation.h>
 #import "LCEntityProtocol.h"
+#import "LCUtils.h"
 
 typedef id <LCEntity>(^LCStoreCreateBlock)();
-typedef void(^LCStoreSubscribeBlock)();
+typedef void(^LCStoreReadBlock)(NSArray *objects);
+
 
 @interface LCStore : NSObject
 + (id)storeWithURL:(NSURL *)url;
 - (id <LCEntity>)createObjectWithConstructor:(LCStoreCreateBlock)block;
 - (void)updateObject:(id <LCEntity>)object;
 - (void)deleteObject:(id <LCEntity>)object;
-- (id <LCEntity>)objectForID:(NSString *)objectID;
-- (void)subscribeToObject:(id <LCEntity>)object updateBlock:(LCStoreSubscribeBlock)block deleteBlock:(LCStoreSubscribeBlock)block;
+- (void)objectsForIDs:(NSArray *)objectIDs completionHandler:(LCStoreReadBlock)success;
+- (void)subscribeToObject:(id <LCEntity>)object updateBlock:(LCNotifyBlock)block;
+- (void)subscribeToObject:(id <LCEntity>)object deleteBlock:(LCNotifyBlock)block;
+- (void)unsubscribeUpdateBlock:(LCNotifyBlock)block;
+- (void)unsubscribeDeleteBlock:(LCNotifyBlock)block;
 @end

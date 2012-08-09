@@ -30,7 +30,7 @@
   return nil;
 }
 
-- (void)deserializeWithData:(NSData *)data store:(LCStore *)store {
+- (void)deserializeWithData:(NSData *)data store:(LCStore *)store{
   
 }
 
