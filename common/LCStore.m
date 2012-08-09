@@ -1,20 +1,28 @@
 
 #import "LCStore.h"
 #import "LivelyBlocks.h"
+#import "LCWeakObject.h"
+#import "LCUtils.h"
 
-@interface LCStore() <NSFilePresenter>
-@property (readwrite, strong) NSURL *url;
-@property (readwrite, strong) NSMutableDictionary *loadedObjects;
-@end
-
-@implementation LCStore
+@implementation LCStore {
+  NSURL *_url;
+  NSOperationQueue *_queue;
+  NSMutableDictionary *_loadedObjects;
+}
 
 + (id)storeWithURL:(NSURL *)url {
-  LCStore *object = [[self alloc] init];
-  object.url = url;
-  object.loadedObjects = [NSMutableDictionary dictionary];
-  [NSFileCoordinator addFilePresenter:object];
-  return object;
+  return [[self alloc] initWithURL:url];
+}
+
+- (id)initWithURL:(NSURL *)url {
+  self = [super init];
+  if (self) {
+    _url = url;
+    _loadedObjects = [NSMutableDictionary dictionary];
+    _queue = [[NSOperationQueue alloc] init];
+    [NSFileCoordinator addFilePresenter:self];
+  }
+  return self;
 }
 
 - (id <LCEntity>)createObjectWithConstructor:(LCStoreCreateBlock)block {
@@ -24,42 +32,51 @@
 }
 
 - (NSURL *)objectURLWithID:(NSString *)objectID {
-  return [self.url URLByAppendingPathComponent:objectID];
+  return [_url URLByAppendingPathComponent:objectID];
 }
 
 - (NSURL *)objectURL:(id <LCEntity>)object {
-  return [self objectURLWithID:object.objectID];
+  return [self objectURLWithID:[object.objectID UUIDString]];
 }
 
 - (void)updateObject:(id<LCEntity>)object {
-  NSData *serialized = [object serialize];
+  NSData *serialized = [self serializeEntity:object];
   NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
-  [coordinater coordinateWritingItemAtURL:[self objectURL:object] options:NSFileCoordinatorWritingForMerging
-                                    error:NULL byAccessor:^(NSURL *newURL) {
-                                      [serialized writeToURL:newURL atomically:YES];
-                                    }];
+  [coordinater coordinateWritingItemAtURL:[self objectURL:object] options:NSFileCoordinatorWritingForMerging error:NULL byAccessor: ^(NSURL *newURL) {
+    [serialized writeToURL:newURL atomically:YES];
+  }];
 }
 
 - (void)deleteObject:(id<LCEntity>)object {
   NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
-  [coordinater coordinateWritingItemAtURL:[self objectURL:object] options:NSFileCoordinatorWritingForDeleting
-                                    error:NULL byAccessor:^(NSURL *newURL) {
-                                      [[NSFileManager defaultManager] removeItemAtURL:newURL error:NULL];
-                                    }];
+  [coordinater coordinateWritingItemAtURL:[self objectURL:object] options:NSFileCoordinatorWritingForDeleting error:NULL byAccessor:^(NSURL *newURL) {
+    [[NSFileManager defaultManager] removeItemAtURL:newURL error:NULL];
+  }];
+}
+
+- (NSData *)serializeEntity:(id<LCEntity>)object {
+  NSData *serializedData = [object serialize];
+  NSDictionary *entityWrapper = @{ @"class": NSStringFromClass([object class]), @"data": serializedData, @"id": [object.objectID UUIDString]};
+  return LCCreateSerializedPropertyList(entityWrapper);
 }
 
 - (id <LCEntity>)deserializeEntity:(NSData *)data {
-  return nil;
+  NSDictionary *entityWrapper = LCCreateDeserializedPropertyList(data);
+  Class class = NSClassFromString(entityWrapper[@"class"]);
+  NSUUID *objectID = [[NSUUID alloc] initWithUUIDString:entityWrapper[@"id"]];
+  id <LCEntity> entity = [class objectWithID:objectID store:self];
+  [entity deserializeWithData:data];
+  return entity;
 }
 
 - (void)objectsForIDs:(NSArray *)objectIDs completionHandler:(LCStoreReadBlock)success {
-  __block NSMutableDictionary *objects = [NSMutableDictionary dictionary];
+  NSMutableDictionary *objects = [NSMutableDictionary dictionary];
   NSMutableArray *idsToLoad = [NSMutableArray array];
   NSMutableArray *urlsToLoad = [NSMutableArray array];
   [objectIDs forEach:^void(id each) {
-    id object = self.loadedObjects[each];
-    if (object) {
-      objects[each] = object;
+    LCWeakObject *weakObject = _loadedObjects[each];
+    if ([weakObject notNil]) {
+      objects[each] = weakObject.object;
     } else {
       [idsToLoad addObject:each];
       [urlsToLoad addObject:[self objectURLWithID:each]];
@@ -67,24 +84,36 @@
   }];
   if ([urlsToLoad count] > 0) {
     NSFileCoordinator *coordinator = [[NSFileCoordinator alloc] initWithFilePresenter:self];
-    [coordinator prepareForReadingItemsAtURLs:urlsToLoad options:NSFileCoordinatorReadingWithoutChanges writingItemsAtURLs:nil
-                                      options:0 error:NULL byAccessor:
-     ^(void (^completionHandler)(void)) {
+    [coordinator prepareForReadingItemsAtURLs:urlsToLoad options:NSFileCoordinatorReadingWithoutChanges writingItemsAtURLs:nil options:0 error:NULL byAccessor: ^(void (^completionHandler)(void)) {
        for(NSString *objectID in idsToLoad){
-         [coordinator coordinateReadingItemAtURL:[self objectURLWithID:objectID] options:NSFileCoordinatorReadingWithoutChanges
-                                           error:NULL byAccessor:
-          ^(NSURL *newURL) {
-            NSData *data = [NSData dataWithContentsOfURL:newURL];
-            objects[objectID] = [self deserializeEntity:data];
-          }];
+         [coordinator coordinateReadingItemAtURL:[self objectURLWithID:objectID] options:NSFileCoordinatorReadingWithoutChanges error:NULL byAccessor: ^(NSURL *newURL) {
+           NSData *data = [NSData dataWithContentsOfURL:newURL];
+           objects[objectID] = [self deserializeEntity:data];
+         }];
        }
        completionHandler();
      }];
   }
+  [idsToLoad forEach:^(id each) {
+    id <LCEntity> entity = objects[each];
+    _loadedObjects[entity.objectID] = [LCWeakObject weakObjectWithObject:entity];
+  }];
   NSArray *resultObjects = [objectIDs collect:^id(id each) {
     return objects[each];
   }];
   success(resultObjects);
+}
+
+@end
+
+@implementation LCStore(NSFilePresenter)
+
+- (NSURL *)presentedItemURL {
+  return _url;
+}
+
+- (NSOperationQueue *)presentedItemOperationQueue {
+  return _queue;
 }
 
 @end

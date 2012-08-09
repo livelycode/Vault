@@ -6,8 +6,13 @@
 
 @protocol LCEntity <NSObject>
 @required
-@property (readonly) NSString *objectID;
-+ (id)objectWithID:(NSString *)objectID data:(NSData *)data store:(LCStore *)store;
+@property (readonly) NSUUID *objectID;
++ (id)objectWithID:(NSUUID *)objectID store:(LCStore *)store;
 - (NSData *)serialize;
-- (void)deserializeWithData:(NSData *)data store:(LCStore *)store completionHandler:(LCNotifyBlock)block;
+- (void)deserializeWithData:(NSData *)data;
+- (void)deleted;
+- (void)subscribeWithUpdateHandler:(LCNotifyBlock)block identifier:(NSUUID *)handlerID;
+- (void)subscribeWithDeleteHandler:(LCNotifyBlock)block identifier:(NSUUID *)handlerID;;
+- (void)unsubscribeUpdateHandler:(NSUUID *)handlerID;
+- (void)unsubscribeDeleteHandler:(NSUUID *)handlerID;
 @end

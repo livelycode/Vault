@@ -1,27 +1,26 @@
 
 #import "LCEntity.h"
-@interface LCEntity()
-@property (readwrite, strong) NSString *objectID;
-- (id)initWithID:(NSString *)objectID;
-@end
+#import "LivelyBlocks.h"
 
-@implementation LCEntity
-@synthesize objectID;
+@implementation LCEntity {
+  NSUUID *_objectID;
+  LCStore *_store;
+  NSMutableDictionary *_updateHandlers;
+  NSMutableDictionary *_deleteHandlers;
+}
 
-+ (id)objectWithID:(NSString *)objectID data:(NSData *)data store:(LCStore *)store {
-  id object = [[self alloc] initWithID:objectID];
-  [object deserializeWithData:data store:store];
++ (id)objectWithID:(NSUUID *)objectID store:(LCStore *)store {
+  id object = [[self alloc] initWithID:objectID store:store];
   return object;
 }
 
-- (id)init {
-  return [self initWithID:[[NSUUID UUID] UUIDString]];
-}
-
-- (id)initWithID:(NSString *)anObjectID {
+- (id)initWithID:(NSUUID *)anObjectID store:(LCStore *)store {
   self = [super init];
   if (self != nil) {
-    self.objectID = anObjectID;
+    _objectID = anObjectID;
+    _store = store;
+    _updateHandlers = [NSMutableDictionary dictionary];
+    _deleteHandlers = [NSMutableDictionary dictionary];
   }
   return self;
 }
@@ -30,8 +29,58 @@
   return nil;
 }
 
-- (void)deserializeWithData:(NSData *)data store:(LCStore *)store{
-  
+- (void)deserializeWithData:(NSData *)data {
+  [self deserializeWithData:data completionHandler:^{
+    [self emitChangeEvent];
+  }];
+}
+
+- (void)deserializeWithData:(NSData *)data completionHandler:(LCNotifyBlock)block {
+  block();
+}
+
+- (NSUUID *)objectID {
+  return _objectID;
+}
+
+- (void)subscribeWithUpdateHandler:(LCNotifyBlock)block identifier:(NSUUID *)handlerID {
+  if (!handlerID) {
+    handlerID = [NSUUID UUID];
+  }
+  _updateHandlers[handlerID] = block;
+}
+
+- (void)subscribeWithDeleteHandler:(LCNotifyBlock)block identifier:(NSUUID *)handlerID {
+  if (!handlerID) {
+    handlerID = [NSUUID UUID];
+  }
+  _deleteHandlers[handlerID] = block;
+}
+
+- (void)unsubscribeUpdateHandler:(NSUUID *)handlerID {
+  [_updateHandlers removeObjectForKey:handlerID];
+}
+
+- (void)unsubscribeDeleteHandler:(NSUUID *)handlerID {
+  [_deleteHandlers removeObjectForKey:handlerID];
+}
+
+- (void)deleted {
+  [self emitDeleteEvent];
+}
+
+- (void)emitChangeEvent {
+  [_updateHandlers keysAndValues:^(id key, id value) {
+    LCNotifyBlock handler = value;
+    handler();
+  }];
+}
+
+- (void)emitDeleteEvent {
+  [_deleteHandlers keysAndValues:^(id key, id value) {
+    LCNotifyBlock handler = value;
+    handler();
+  }];
 }
 
 @end
