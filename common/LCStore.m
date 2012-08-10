@@ -1,7 +1,6 @@
 
 #import "LCStore.h"
 #import "LivelyBlocks.h"
-#import "LCWeakObject.h"
 #import "LCUtils.h"
 
 @implementation LCStore {
