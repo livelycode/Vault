@@ -3,7 +3,7 @@
 
 @class LCStore;
 
-@protocol LCEntityStoring <NSObject>
+@protocol LCStorableObject <NSObject>
 @required
 @property (readonly) NSUUID *objectID;
 + (id)objectWithID:(NSUUID *)objectID store:(LCStore *)store;
