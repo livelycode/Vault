@@ -27,29 +27,6 @@
   return _fields;
 }
 
-- (NSData *)serialize {
-  NSArray *objectIDs = [_entries collect:^id(id each) {
-    return [each objectID];
-  }];
-  NSDictionary *data = @{
-    @"name": self.name,
-    @"fields": _fields,
-    @"entries": objectIDs
-  };
-  return LCCreateSerializedPropertyList(data);
-}
-
-- (void)deserializeWithData:(NSData *)data store:(LCStore *)store completionHandler:(LCNotifyBlock)completionHandler {
-  NSDictionary *obj = LCCreateDeserializedPropertyList(data);
-  self.name = obj[@"name"];
-  _fields = [NSMutableDictionary dictionaryWithDictionary:obj[@"fields"]];
-  NSArray *entryIDs = obj[@"entries"];
-  [store objectsForIDs:entryIDs completionHandler:^(NSArray *objects) {
-    _entries = [NSMutableArray arrayWithArray:objects];
-    completionHandler();
-  }];
-}
-
 - (void)addField:(NSString *)name withID:(NSString *)fieldID {
   _fields[fieldID] = fieldID;
 }
@@ -66,4 +43,20 @@
   [_entries removeObject:entry];
 }
 
+/*
+ NSCoding protocol
+*/
+- (id)initWithCoder:(NSCoder *)aDecoder {
+  self = [super init];
+  if (self != nil) {
+    _fields = [aDecoder decodeObjectForKey:@"fields"];
+    _entries = [aDecoder decodeObjectForKey:@"entries"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+  [aCoder encodeObject:_fields forKey:@"fields"];
+  [aCoder encodeObject:_entries forKey:@"entries"];
+}
 @end

@@ -4,42 +4,26 @@
 
 @implementation LCEntity {
   NSUUID *_objectID;
+  id <NSCoding> _object;
   LCStore *_store;
   NSMutableDictionary *_updateHandlers;
   NSMutableDictionary *_deleteHandlers;
 }
 
-+ (id)entityWithStore:(LCStore *)store {
-  return [[self alloc] initWithID:[NSUUID UUID] store:store];
++ (id)entityWithObject:(id<NSCoding>)object store:(LCStore *)store {
+  return [[self alloc] initWithID:[NSUUID UUID] object:object store:store];
 }
 
-+ (id)objectWithID:(NSUUID *)objectID store:(LCStore *)store {
-  return [[self alloc] initWithID:objectID store:store];
-}
-
-- (id)initWithID:(NSUUID *)anObjectID store:(LCStore *)store {
+- (id)initWithID:(NSUUID *)anObjectID object:(id <NSCoding>)object store:(LCStore *)store {
   self = [super init];
   if (self != nil) {
     _objectID = anObjectID;
+    _object = object;
     _store = store;
     _updateHandlers = [NSMutableDictionary dictionary];
     _deleteHandlers = [NSMutableDictionary dictionary];
   }
   return self;
-}
-
-- (NSData *)serialize {
-  return nil;
-}
-
-- (void)deserializeWithData:(NSData *)data {
-  [self deserializeWithData:data completionHandler:^{
-    [self emitChangeEvent];
-  }];
-}
-
-- (void)deserializeWithData:(NSData *)data completionHandler:(LCNotifyBlock)block {
-  block();
 }
 
 - (NSUUID *)objectID {
@@ -68,10 +52,6 @@
   [_deleteHandlers removeObjectForKey:handlerID];
 }
 
-- (void)deleted {
-  [self emitDeleteEvent];
-}
-
 - (void)emitChangeEvent {
   [_updateHandlers keysAndValues:^(id key, id value) {
     LCNotifyBlock handler = value;
@@ -84,6 +64,72 @@
     LCNotifyBlock handler = value;
     handler();
   }];
+}
+
+- (NSData *)serialize:(id <NSCoding>)object {
+  return [NSKeyedArchiver archivedDataWithRootObject:_object];
+}
+
+- (id <NSCoding>)deserialize:(NSData *)data {
+  NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
+  unarchiver.delegate = self;
+  [unarchiver finishDecoding];
+  return [unarchiver decodeObjectForKey:@"root"];
+}
+
+- (void)readObject:(LCEntityAccessHandler)handler {
+  
+}
+
+- (void)updateObject:(LCEntityAccessHandler)handler {
+  
+}
+
+- (void)deleteObject {
+  
+}
+
+/*
+ LCDataObserver protocol
+*/
+
+- (void)updated {
+  [self emitChangeEvent];
+}
+
+- (void)deleted {
+  [self emitDeleteEvent];
+}
+
+/*
+ NSCoding protocol
+*/
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+  self = [super init];
+  if (self) {
+    _objectID = [aDecoder decodeObjectForKey:@"objectID"];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+  [aCoder encodeObject:_objectID forKey:@"objectID"];
+}
+
+/*
+ NSUnarchiver delegate protocol
+*/
+
+- (void)setStore:(LCStore *)store {
+  _store = store;
+}
+
+- (id)unarchiver:(NSKeyedUnarchiver *)unarchiver didDecodeObject:(id)object {
+  if([[object class] isSubclassOfClass:[LCEntity class]]) {
+    [object setStore:_store];
+  }
+  return nil;
 }
 
 @end

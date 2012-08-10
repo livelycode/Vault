@@ -1,10 +1,9 @@
 
 #import <Foundation/Foundation.h>
-#import "LCEntity.h"
 
 @class LCEntry;
 
-@interface LCCategory : LCEntity
+@interface LCCategory : NSObject <NSCoding>
 @property (readonly) NSDictionary *fields; // keys are UUIDs
 @property (readwrite, strong) NSString *name;
 @property (readonly) NSArray *entries;

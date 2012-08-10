@@ -26,13 +26,19 @@
   [_fields removeObjectForKey:fieldID];
 }
 
-- (NSData *)serialize {
-  return LCCreateSerializedPropertyList(_fields);
+/*
+ NSCoding protocol
+*/
+- (id)initWithCoder:(NSCoder *)aDecoder {
+  self = [super init];
+  if (self) {
+    _fields = [aDecoder decodeObjectForKey:@"fields"];
+  }
+  return self;
 }
 
-- (void)deserializeWithData:(NSData *)data store:(LCStore *)store {
-  NSDictionary *obj = LCCreateDeserializedPropertyList(data);
-  _fields = [NSMutableDictionary dictionaryWithDictionary:obj];
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+  [aCoder encodeObject:_fields forKey:@"fields"];
 }
 
 @end

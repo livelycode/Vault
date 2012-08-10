@@ -35,12 +35,20 @@
   return LCCreateSerializedPropertyList(_categories);
 }
 
-- (void)deserializeWithData:(NSData *)data store:(LCStore *)store completionHandler:(LCNotifyBlock)completionHandler {
-  NSArray *deserializedData = LCCreateDeserializedPropertyList(data);
-  [store objectsForIDs:deserializedData completionHandler:^(NSArray *objects) {
-    _categories = [NSMutableArray arrayWithArray:objects];
-    completionHandler();
-  }];
+/*
+ NSCoding Protocol
+*/
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+  self = [super init];
+  if (self != nil) {
+    _categories = [aDecoder decodeObject];
+  }
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+  [aCoder encodeObject:_categories];
 }
 
 @end

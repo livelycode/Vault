@@ -7,7 +7,6 @@
 @implementation LCStore {
   NSURL *_url;
   NSOperationQueue *_queue;
-  NSMutableDictionary *_loadedObjects;
 }
 
 + (id)storeWithURL:(NSURL *)url {
@@ -18,84 +17,68 @@
   self = [super init];
   if (self) {
     _url = url;
-    _loadedObjects = [NSMutableDictionary dictionary];
     _queue = [[NSOperationQueue alloc] init];
     [NSFileCoordinator addFilePresenter:self];
   }
   return self;
 }
 
-- (NSURL *)objectURLWithID:(NSString *)objectID {
-  return [_url URLByAppendingPathComponent:objectID];
+- (NSURL *)URLWithKey:(NSString *)key {
+  return [_url URLByAppendingPathComponent:key];
 }
 
-- (NSURL *)objectURL:(id <LCStorableObject>)object {
-  return [self objectURLWithID:[object.objectID UUIDString]];
-}
-
-- (void)updateObject:(id <LCStorableObject>)object {
-  NSData *serialized = [self serializeEntity:object];
+- (void)createData:(NSData *)data withKey:(NSString *)key {
   NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
-  [coordinater coordinateWritingItemAtURL:[self objectURL:object] options:NSFileCoordinatorWritingForMerging error:NULL byAccessor: ^(NSURL *newURL) {
-    [serialized writeToURL:newURL atomically:YES];
+  [coordinater coordinateWritingItemAtURL:[self URLWithKey:key] options:NSFileCoordinatorWritingForReplacing error:NULL byAccessor: ^(NSURL *newURL) {
+    [data writeToURL:newURL atomically:YES];
   }];
 }
 
-- (void)deleteObject:(id <LCStorableObject>)object {
+- (void)updateData:(NSData *)data withKey:(NSString *)key {
   NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
-  [coordinater coordinateWritingItemAtURL:[self objectURL:object] options:NSFileCoordinatorWritingForDeleting error:NULL byAccessor:^(NSURL *newURL) {
+  [coordinater coordinateWritingItemAtURL:[self URLWithKey:key] options:NSFileCoordinatorWritingForMerging error:NULL byAccessor: ^(NSURL *newURL) {
+    [data writeToURL:newURL atomically:YES];
+  }];
+}
+
+- (void)deleteDataWithKey:(NSString *)key {
+  NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
+  [coordinater coordinateWritingItemAtURL:[self URLWithKey:key] options:NSFileCoordinatorWritingForDeleting error:NULL byAccessor:^(NSURL *newURL) {
     [[NSFileManager defaultManager] removeItemAtURL:newURL error:NULL];
   }];
 }
 
-- (NSData *)serializeEntity:(id <LCStorableObject>)object {
-  NSData *serializedData = [object serialize];
-  NSDictionary *entityWrapper = @{ @"class": NSStringFromClass([object class]), @"data": serializedData, @"id": [object.objectID UUIDString]};
-  return LCCreateSerializedPropertyList(entityWrapper);
+- (void)dataForKey:(NSString *)key handler:(LCDataBlock)handler {
+  NSFileCoordinator *coordinator = [[NSFileCoordinator alloc] initWithFilePresenter:self];
+  [coordinator coordinateReadingItemAtURL:[self URLWithKey:key] options:NSFileCoordinatorReadingWithoutChanges error:NULL byAccessor: ^(NSURL *newURL) {
+    handler([NSData dataWithContentsOfURL:newURL]);
+  }];
 }
 
-- (id <LCStorableObject>)deserializeEntity:(NSData *)data {
-  NSDictionary *entityWrapper = LCCreateDeserializedPropertyList(data);
-  Class class = NSClassFromString(entityWrapper[@"class"]);
-  NSUUID *objectID = [[NSUUID alloc] initWithUUIDString:entityWrapper[@"id"]];
-  id <LCStorableObject> entity = [class objectWithID:objectID store:self];
-  [entity deserializeWithData:data];
-  return entity;
-}
-
-- (void)objectsForIDs:(NSArray *)objectIDs completionHandler:(LCStoreReadBlock)success {
-  NSMutableDictionary *objects = [NSMutableDictionary dictionary];
-  NSMutableArray *idsToLoad = [NSMutableArray array];
+- (void)dataForKeys:(NSArray *)keys completionHandler:(LCArrayBlock)success {
+  NSMutableArray *dataObjects = [NSMutableDictionary dictionary];
   NSMutableArray *urlsToLoad = [NSMutableArray array];
-  [objectIDs forEach:^void(id each) {
-    LCWeakObject *weakObject = _loadedObjects[each];
-    if ([weakObject notNil]) {
-      objects[each] = weakObject.object;
-    } else {
-      [idsToLoad addObject:each];
-      [urlsToLoad addObject:[self objectURLWithID:each]];
+  [keys collect:^id(id each) {
+    return [self URLWithKey:each];
+  }];
+  NSFileCoordinator *coordinator = [[NSFileCoordinator alloc] initWithFilePresenter:self];
+  [coordinator prepareForReadingItemsAtURLs:urlsToLoad options:NSFileCoordinatorReadingWithoutChanges writingItemsAtURLs:nil options:0 error:NULL byAccessor: ^(void (^completionHandler)(void)) {
+    for(NSURL *url in urlsToLoad){
+      [coordinator coordinateReadingItemAtURL:url options:NSFileCoordinatorReadingWithoutChanges error:NULL byAccessor: ^(NSURL *newURL) {
+        [dataObjects addObject:[NSData dataWithContentsOfURL:newURL]];
+      }];
     }
+    completionHandler();
   }];
-  if ([urlsToLoad count] > 0) {
-    NSFileCoordinator *coordinator = [[NSFileCoordinator alloc] initWithFilePresenter:self];
-    [coordinator prepareForReadingItemsAtURLs:urlsToLoad options:NSFileCoordinatorReadingWithoutChanges writingItemsAtURLs:nil options:0 error:NULL byAccessor: ^(void (^completionHandler)(void)) {
-       for(NSString *objectID in idsToLoad){
-         [coordinator coordinateReadingItemAtURL:[self objectURLWithID:objectID] options:NSFileCoordinatorReadingWithoutChanges error:NULL byAccessor: ^(NSURL *newURL) {
-           NSData *data = [NSData dataWithContentsOfURL:newURL];
-           objects[objectID] = [self deserializeEntity:data];
-         }];
-       }
-       completionHandler();
-     }];
-  }
-  [idsToLoad forEach:^(id each) {
-    id <LCStorableObject> entity = objects[each];
-    _loadedObjects[entity.objectID] = [LCWeakObject weakObjectWithObject:entity];
-  }];
-  NSArray *resultObjects = [objectIDs collect:^id(id each) {
-    return objects[each];
-  }];
-  success(resultObjects);
+  success(dataObjects);
+}
+
+- (void)notifyChangeWithKey:(NSString *)key handler:(LCNotifyBlock)handler {
+  
+}
+
+- (void)notifyDeleteWithKey:(NSString *)key handler:(LCNotifyBlock)handler {
+  
 }
 
 /*
