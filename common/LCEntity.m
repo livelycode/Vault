@@ -18,9 +18,10 @@
   self = [super init];
   if (self != nil) {
     _objectID = [anObjectID UUIDString];
-    _object = object;
     _store = store;
     _observers = [NSMutableArray array];
+    _object = object;
+    [self storeObject];
   }
   return self;
 }
@@ -29,12 +30,12 @@
   return [[NSUUID alloc] initWithUUIDString:_objectID];
 }
 
-- (void)subscribeWithObserver:(id <LCEntityObserver>)observer {
+- (void)addObserver:(id <LCEntityObserver>)observer {
   [_observers addObject:observer];
   [_store subscribeToKey:_objectID observer:self];
 }
 
-- (void)unsubscribeObserver:(id <LCEntityObserver>)observer {
+- (void)removeObserver:(id <LCEntityObserver>)observer {
   [_observers removeObject:observer];
   if ([_observers count] == 0) {
     [_store unsubscribeFromKey:_objectID observer:self];
@@ -43,13 +44,13 @@
 
 - (void)emitUpdateEvent {
   [_observers forEach:^(id <LCEntityObserver> each) {
-    [each updated:self];
+    [each updatedEntity:self];
   }];
 }
 
 - (void)emitDeleteEvent {
   [_observers forEach:^(id <LCEntityObserver> each) {
-    [each deleted:self];
+    [each deletedEntity:self];
   }];
 }
 
@@ -70,20 +71,26 @@
 
 - (void)readObject:(LCEntityReadHandler)handler {
   if (_object) {
+    handler(_object);
+  } else {
     [_store dataForKey:_objectID handler:^(NSData *data) {
       _object = [self deserialize:data];
       handler(_object);
     }];
-  } else {
-    handler(_object);
+  }
+}
+
+- (void)storeObject {
+  if (_object) {
+    NSData *data = [self serialize:_object];
+    [_store updateData:data forKey:_objectID];
   }
 }
 
 - (void)updateObject:(LCEntityUpdateHandler)handler {
   [self readObject:^(id object) {
     handler(object, ^() {
-      NSData *data = [self serialize:object];
-      [_store updateData:data forKey:_objectID];
+      [self storeObject];
     });
   }];
 }
@@ -139,11 +146,11 @@
 
 @implementation LCEntityEvents
 
-- (void)updated:(LCEntity *)entity {
+- (void)updatedEntity:(LCEntity *)entity {
   [self emitEvent:@"updated" withMessage:nil];
 }
 
-- (void)deleted:(LCEntity *)entity {
+- (void)deletedEntity:(LCEntity *)entity {
   [self emitEvent:@"deleted" withMessage:nil];
 }
 
