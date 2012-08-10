@@ -11,6 +11,7 @@ typedef void(^LCEntityReadHandler)(id object);
 typedef void(^LCEntityUpdateHandler)(id object, LCDoneHandler done);
 
 @protocol LCEntityObserver <NSObject>
+@optional
 - (void)updatedEntity:(LCEntity *)entity;
 - (void)deletedEntity:(LCEntity *)entity;
 @end
@@ -23,6 +24,7 @@ typedef void(^LCEntityUpdateHandler)(id object, LCDoneHandler done);
 - (void)readObject:(LCEntityReadHandler)handler;
 - (void)updateObject:(LCEntityUpdateHandler)handler;
 - (void)deleteObject;
+- (void)uncacheObject;
 @end
 
 @interface LCEntityEvents : LCEventEmitter <LCEntityObserver>

@@ -55,14 +55,15 @@
 }
 
 - (NSData *)serialize:(id <NSCoding>)object {
-  return [NSKeyedArchiver archivedDataWithRootObject:_object];
+  return [NSKeyedArchiver archivedDataWithRootObject:object];
 }
 
-- (id <NSCoding>)deserialize:(NSData *)data {
+- (id)deserialize:(NSData *)data {
   NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
   unarchiver.delegate = self;
+  id object = [unarchiver decodeObjectForKey:@"root"];
   [unarchiver finishDecoding];
-  return [unarchiver decodeObjectForKey:@"root"];
+  return object;
 }
 
 - (void)uncacheObject {
