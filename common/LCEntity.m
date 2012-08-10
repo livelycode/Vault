@@ -10,7 +10,7 @@
   NSMutableArray *_observers;
 }
 
-+ (id)entityWithObject:(id<NSCoding>)object store:(LCStore *)store {
++ (id)entityWithObject:(id <NSCoding>)object store:(LCStore *)store {
   return [[self alloc] initWithID:[NSUUID UUID] object:object store:store];
 }
 
@@ -29,12 +29,12 @@
   return [[NSUUID alloc] initWithUUIDString:_objectID];
 }
 
-- (void)subscribeWithObserver:(id<LCEntityObserver>)observer {
+- (void)subscribeWithObserver:(id <LCEntityObserver>)observer {
   [_observers addObject:observer];
   [_store subscribeToKey:_objectID observer:self];
 }
 
-- (void)unsubscribeObserver:(id<LCEntityObserver>)observer {
+- (void)unsubscribeObserver:(id <LCEntityObserver>)observer {
   [_observers removeObject:observer];
   if ([_observers count] == 0) {
     [_store unsubscribeFromKey:_objectID observer:self];
@@ -42,13 +42,13 @@
 }
 
 - (void)emitUpdateEvent {
-  [_observers forEach:^(id<LCEntityObserver> each) {
+  [_observers forEach:^(id <LCEntityObserver> each) {
     [each updated:self];
   }];
 }
 
 - (void)emitDeleteEvent {
-  [_observers forEach:^(id<LCEntityObserver> each) {
+  [_observers forEach:^(id <LCEntityObserver> each) {
     [each deleted:self];
   }];
 }
