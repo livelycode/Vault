@@ -7,8 +7,7 @@
   NSString *_objectID;
   id <NSCoding> _object;
   LCStore *_store;
-  NSMutableDictionary *_updateHandlers;
-  NSMutableDictionary *_deleteHandlers;
+  NSMutableArray *_observers;
 }
 
 + (id)entityWithObject:(id<NSCoding>)object store:(LCStore *)store {
@@ -21,8 +20,7 @@
     _objectID = [anObjectID UUIDString];
     _object = object;
     _store = store;
-    _updateHandlers = [NSMutableDictionary dictionary];
-    _deleteHandlers = [NSMutableDictionary dictionary];
+    _observers = [NSMutableArray array];
   }
   return self;
 }
@@ -31,39 +29,23 @@
   return [[NSUUID alloc] initWithUUIDString:_objectID];
 }
 
-- (void)subscribeWithUpdateHandler:(LCNotifyBlock)block identifier:(NSUUID *)handlerID {
-  if (!handlerID) {
-    handlerID = [NSUUID UUID];
-  }
-  _updateHandlers[handlerID] = block;
+- (void)subscribeWithObserver:(id<LCEntityObserver>)observer {
+  [_observers addObject:observer];
 }
 
-- (void)subscribeWithDeleteHandler:(LCNotifyBlock)block identifier:(NSUUID *)handlerID {
-  if (!handlerID) {
-    handlerID = [NSUUID UUID];
-  }
-  _deleteHandlers[handlerID] = block;
+- (void)unsubscribeObserver:(id<LCEntityObserver>)observer {
+  [_observers removeObject:observer];
 }
 
-- (void)unsubscribeUpdateHandler:(NSUUID *)handlerID {
-  [_updateHandlers removeObjectForKey:handlerID];
-}
-
-- (void)unsubscribeDeleteHandler:(NSUUID *)handlerID {
-  [_deleteHandlers removeObjectForKey:handlerID];
-}
-
-- (void)emitChangeEvent {
-  [_updateHandlers keysAndValues:^(id key, id value) {
-    LCNotifyBlock handler = value;
-    handler();
+- (void)emitUpdateEvent {
+  [_observers forEach:^(id<LCEntityObserver> each) {
+    [each updated:self];
   }];
 }
 
 - (void)emitDeleteEvent {
-  [_deleteHandlers keysAndValues:^(id key, id value) {
-    LCNotifyBlock handler = value;
-    handler();
+  [_observers forEach:^(id<LCEntityObserver> each) {
+    [each deleted:self];
   }];
 }
 
@@ -111,7 +93,7 @@
 */
 
 - (void)updated {
-  [self emitChangeEvent];
+  [self emitUpdateEvent];
 }
 
 - (void)deleted {
@@ -147,6 +129,30 @@
     [object setStore:_store];
   }
   return nil;
+}
+
+@end
+
+@implementation LCEntityEvents
+
+- (void)updated:(LCEntity *)entity {
+  [self emitEvent:@"updated" withMessage:nil];
+}
+
+- (void)deleted:(LCEntity *)entity {
+  [self emitEvent:@"deleted" withMessage:nil];
+}
+
+- (void)onUpdate:(LCNotifyBlock)handler {
+  [self registerEvent:@"updated" withHandler:^(id message) {
+    handler();
+  }];
+}
+
+- (void)onDelete:(LCNotifyBlock)handler {
+  [self registerEvent:@"deleted" withHandler:^(id message) {
+    handler();
+  }];
 }
 
 @end
