@@ -3,5 +3,5 @@
 #import "LCEntityProtocol.h"
 
 @interface LCEntity : NSObject <LCEntity>
-
++ (id)entityWithStore:(LCStore *)store;
 @end

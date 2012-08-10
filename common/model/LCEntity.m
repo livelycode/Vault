@@ -9,9 +9,12 @@
   NSMutableDictionary *_deleteHandlers;
 }
 
++ (id)entityWithStore:(LCStore *)store {
+  return [[self alloc] initWithID:[NSUUID UUID] store:store];
+}
+
 + (id)objectWithID:(NSUUID *)objectID store:(LCStore *)store {
-  id object = [[self alloc] initWithID:objectID store:store];
-  return object;
+  return [[self alloc] initWithID:objectID store:store];
 }
 
 - (id)initWithID:(NSUUID *)anObjectID store:(LCStore *)store {
