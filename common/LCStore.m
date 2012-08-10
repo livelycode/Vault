@@ -7,6 +7,7 @@
 @implementation LCStore {
   NSURL *_url;
   NSOperationQueue *_queue;
+  NSMutableDictionary *_observers;
 }
 
 + (id)storeWithURL:(NSURL *)url {
@@ -18,6 +19,7 @@
   if (self) {
     _url = url;
     _queue = [[NSOperationQueue alloc] init];
+    _observers = [NSMutableDictionary dictionary];
     [NSFileCoordinator addFilePresenter:self];
   }
   return self;
@@ -73,6 +75,27 @@
   success(dataObjects);
 }
 
+- (NSMutableSet *)obsverversForKey:(NSString *)key {
+  NSMutableSet *keyObservers = _observers[key];
+  if (!keyObservers) {
+    keyObservers = [NSMutableSet set];
+    _observers[key] = keyObservers;
+  }
+  return keyObservers;
+}
+
+- (void)subscribeToKey:(NSString *)key observer:(id<LCDataObserver>)observer {
+  NSMutableArray *keyObservers = _observers[key];
+  if (!keyObservers) {
+    keyObservers = [NSMutableSet set];
+    _observers[key] = keyObservers;
+  }
+  [keyObservers addObject:observer];
+}
+
+- (void)unsubscribeFromKey:(NSString *)key observer:(id<LCDataObserver>)observer {
+  [_observers[key] removeObject:observer];
+}
 
 /*
  NSFilePresenter protocol

@@ -31,10 +31,14 @@
 
 - (void)subscribeWithObserver:(id<LCEntityObserver>)observer {
   [_observers addObject:observer];
+  [_store subscribeToKey:_objectID observer:self];
 }
 
 - (void)unsubscribeObserver:(id<LCEntityObserver>)observer {
   [_observers removeObject:observer];
+  if ([_observers count] == 0) {
+    [_store unsubscribeFromKey:_objectID observer:self];
+  }
 }
 
 - (void)emitUpdateEvent {
@@ -92,11 +96,11 @@
  LCDataObserver protocol
 */
 
-- (void)updated {
+- (void)updated:(NSString *)key {
   [self emitUpdateEvent];
 }
 
-- (void)deleted {
+- (void)deleted:(NSString *)key {
   [self emitDeleteEvent];
 }
 
