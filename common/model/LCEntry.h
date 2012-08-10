@@ -1,6 +1,5 @@
 
 #import <Foundation/Foundation.h>
-#import "LCEntityProtocol.h"
 #import "LCEntity.h"
 
 @interface LCEntry : LCEntity
