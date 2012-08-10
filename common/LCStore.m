@@ -3,7 +3,6 @@
 #import "LivelyBlocks.h"
 #import "LCWeakObject.h"
 #import "LCUtils.h"
-#import "LCEntity.h"
 
 @implementation LCStore {
   NSURL *_url;
@@ -30,11 +29,11 @@
   return [_url URLByAppendingPathComponent:objectID];
 }
 
-- (NSURL *)objectURL:(LCEntity *)object {
+- (NSURL *)objectURL:(id <LCEntityStoring>)object {
   return [self objectURLWithID:[object.objectID UUIDString]];
 }
 
-- (void)updateObject:(LCEntity *)object {
+- (void)updateObject:(id <LCEntityStoring>)object {
   NSData *serialized = [self serializeEntity:object];
   NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
   [coordinater coordinateWritingItemAtURL:[self objectURL:object] options:NSFileCoordinatorWritingForMerging error:NULL byAccessor: ^(NSURL *newURL) {
@@ -42,24 +41,24 @@
   }];
 }
 
-- (void)deleteObject:(LCEntity *)object {
+- (void)deleteObject:(id <LCEntityStoring>)object {
   NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
   [coordinater coordinateWritingItemAtURL:[self objectURL:object] options:NSFileCoordinatorWritingForDeleting error:NULL byAccessor:^(NSURL *newURL) {
     [[NSFileManager defaultManager] removeItemAtURL:newURL error:NULL];
   }];
 }
 
-- (NSData *)serializeEntity:(LCEntity *)object {
+- (NSData *)serializeEntity:(id <LCEntityStoring>)object {
   NSData *serializedData = [object serialize];
   NSDictionary *entityWrapper = @{ @"class": NSStringFromClass([object class]), @"data": serializedData, @"id": [object.objectID UUIDString]};
   return LCCreateSerializedPropertyList(entityWrapper);
 }
 
-- (LCEntity *)deserializeEntity:(NSData *)data {
+- (id <LCEntityStoring>)deserializeEntity:(NSData *)data {
   NSDictionary *entityWrapper = LCCreateDeserializedPropertyList(data);
   Class class = NSClassFromString(entityWrapper[@"class"]);
   NSUUID *objectID = [[NSUUID alloc] initWithUUIDString:entityWrapper[@"id"]];
-  LCEntity * entity = [class objectWithID:objectID store:self];
+  id <LCEntityStoring> entity = [class objectWithID:objectID store:self];
   [entity deserializeWithData:data];
   return entity;
 }
@@ -90,7 +89,7 @@
      }];
   }
   [idsToLoad forEach:^(id each) {
-    LCEntity * entity = objects[each];
+    id <LCEntityStoring> entity = objects[each];
     _loadedObjects[entity.objectID] = [LCWeakObject weakObjectWithObject:entity];
   }];
   NSArray *resultObjects = [objectIDs collect:^id(id each) {

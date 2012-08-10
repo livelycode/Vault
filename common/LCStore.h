@@ -1,13 +1,17 @@
 
 #import <Foundation/Foundation.h>
 #import "LCUtils.h"
+#import "LCEntityStoring.h"
 
-@class LCEntity;
 typedef void(^LCStoreReadBlock)(NSArray *objects);
 
 @interface LCStore : NSObject <NSFilePresenter>
 + (id)storeWithURL:(NSURL *)url;
-- (void)updateObject:(LCEntity *)object;
-- (void)deleteObject:(LCEntity *)object;
+- (void)updateObject:(id <LCEntityStoring>)object;
+- (void)deleteObject:(id <LCEntityStoring>)object;
 - (void)objectsForIDs:(NSArray *)objectIDs completionHandler:(LCStoreReadBlock)success;
+@end
+
+@protocol LCStoreEntity
+
 @end
