@@ -104,10 +104,9 @@
   success(resultObjects);
 }
 
-@end
-
-@implementation LCStore(NSFilePresenter)
-
+/*
+ NSFilePresenter protocol
+*/
 - (NSURL *)presentedItemURL {
   return _url;
 }
