@@ -1,9 +1,10 @@
 
 #import "LCEntity.h"
 #import "LivelyBlocks.h"
+#import "LCStore.h"
 
 @implementation LCEntity {
-  NSUUID *_objectID;
+  NSString *_objectID;
   id <NSCoding> _object;
   LCStore *_store;
   NSMutableDictionary *_updateHandlers;
@@ -17,7 +18,7 @@
 - (id)initWithID:(NSUUID *)anObjectID object:(id <NSCoding>)object store:(LCStore *)store {
   self = [super init];
   if (self != nil) {
-    _objectID = anObjectID;
+    _objectID = [anObjectID UUIDString];
     _object = object;
     _store = store;
     _updateHandlers = [NSMutableDictionary dictionary];
@@ -27,7 +28,7 @@
 }
 
 - (NSUUID *)objectID {
-  return _objectID;
+  return [[NSUUID alloc] initWithUUIDString:_objectID];
 }
 
 - (void)subscribeWithUpdateHandler:(LCNotifyBlock)block identifier:(NSUUID *)handlerID {
@@ -77,16 +78,32 @@
   return [unarchiver decodeObjectForKey:@"root"];
 }
 
-- (void)readObject:(LCEntityAccessHandler)handler {
-  
+- (void)uncacheObject {
+  _object = nil;
 }
 
-- (void)updateObject:(LCEntityAccessHandler)handler {
-  
+- (void)readObject:(LCEntityReadHandler)handler {
+  if (_object) {
+    [_store dataWithKey:_objectID handler:^(NSData *data) {
+      _object = [self deserialize:data];
+      handler(_object);
+    }];
+  } else {
+    handler(_object);
+  }
+}
+
+- (void)updateObject:(LCEntityUpdateHandler)handler {
+  [self readObject:^(id object) {
+    handler(object, ^() {
+      NSData *data = [self serialize:object];
+      [_store updateData:data withKey:_objectID];
+    });
+  }];
 }
 
 - (void)deleteObject {
-  
+  [_store deleteDataWithKey:_objectID];
 }
 
 /*
