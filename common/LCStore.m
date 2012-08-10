@@ -27,21 +27,21 @@
   return [_url URLByAppendingPathComponent:key];
 }
 
-- (void)createData:(NSData *)data withKey:(NSString *)key {
+- (void)createData:(NSData *)data forKey:(NSString *)key {
   NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
   [coordinater coordinateWritingItemAtURL:[self URLWithKey:key] options:NSFileCoordinatorWritingForReplacing error:NULL byAccessor: ^(NSURL *newURL) {
     [data writeToURL:newURL atomically:YES];
   }];
 }
 
-- (void)updateData:(NSData *)data withKey:(NSString *)key {
+- (void)updateData:(NSData *)data forKey:(NSString *)key {
   NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
   [coordinater coordinateWritingItemAtURL:[self URLWithKey:key] options:NSFileCoordinatorWritingForMerging error:NULL byAccessor: ^(NSURL *newURL) {
     [data writeToURL:newURL atomically:YES];
   }];
 }
 
-- (void)deleteDataWithKey:(NSString *)key {
+- (void)deleteDataForKey:(NSString *)key {
   NSFileCoordinator *coordinater = [[NSFileCoordinator alloc] initWithFilePresenter:self];
   [coordinater coordinateWritingItemAtURL:[self URLWithKey:key] options:NSFileCoordinatorWritingForDeleting error:NULL byAccessor:^(NSURL *newURL) {
     [[NSFileManager defaultManager] removeItemAtURL:newURL error:NULL];
@@ -73,13 +73,6 @@
   success(dataObjects);
 }
 
-- (void)notifyChangeWithKey:(NSString *)key handler:(LCNotifyBlock)handler {
-  
-}
-
-- (void)notifyDeleteWithKey:(NSString *)key handler:(LCNotifyBlock)handler {
-  
-}
 
 /*
  NSFilePresenter protocol

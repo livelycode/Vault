@@ -1,7 +1,7 @@
 
 #import <Foundation/Foundation.h>
 #import "LCUtils.h"
-#import "LCDataObserver.h"
+#import "LCStore.h"
 #import "LCEventEmitter.h"
 
 @class LCStore, LCEventEmitter, LCEntity;

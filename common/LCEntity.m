@@ -66,7 +66,7 @@
 
 - (void)readObject:(LCEntityReadHandler)handler {
   if (_object) {
-    [_store dataWithKey:_objectID handler:^(NSData *data) {
+    [_store dataForKey:_objectID handler:^(NSData *data) {
       _object = [self deserialize:data];
       handler(_object);
     }];
@@ -79,13 +79,13 @@
   [self readObject:^(id object) {
     handler(object, ^() {
       NSData *data = [self serialize:object];
-      [_store updateData:data withKey:_objectID];
+      [_store updateData:data forKey:_objectID];
     });
   }];
 }
 
 - (void)deleteObject {
-  [_store deleteDataWithKey:_objectID];
+  [_store deleteDataForKey:_objectID];
 }
 
 /*
