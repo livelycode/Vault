@@ -35,11 +35,11 @@
   [_fields removeObjectForKey:fieldID];
 }
 
-- (void)addEntry:(LCEntry *)entry {
+- (void)addEntry:(LCEntity *)entry {
   [_entries addObject:entry];
 }
 
-- (void)removeEntry:(LCEntry *)entry {
+- (void)removeEntry:(LCEntity *)entry {
   [_entries removeObject:entry];
 }
 

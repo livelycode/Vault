@@ -19,7 +19,7 @@
   return self;
 }
 
-- (void)insertCategory:(LCCategory *)category atIndex:(NSUInteger)index {
+- (void)insertCategory:(LCEntity *)category atIndex:(NSUInteger)index {
   [_categories insertObject:category atIndex:index];
 }
 
