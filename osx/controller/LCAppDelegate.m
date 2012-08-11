@@ -7,12 +7,12 @@
 //
 
 #import "LCAppDelegate.h"
+#import "LCStore.h"
 
-@implementation LCAppDelegate
+@implementation LCAppDelegate {
+}
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
-  // Insert code here to initialize your application
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 }
 
 @end

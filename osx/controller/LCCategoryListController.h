@@ -7,7 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "LCEntity.h"
 
-@interface LCCategoryList : NSViewController
-
+@interface LCCategoryListController : NSObject <NSTableViewDelegate, NSTableViewDataSource, LCEntityObserver> {
+}
 @end
