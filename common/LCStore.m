@@ -50,10 +50,15 @@
 }
 
 - (void)dataForKey:(NSString *)key handler:(LCDataBlock)handler {
-  NSFileCoordinator *coordinator = [[NSFileCoordinator alloc] initWithFilePresenter:self];
-  [coordinator coordinateReadingItemAtURL:[self URLWithKey:key] options:NSFileCoordinatorReadingWithoutChanges error:NULL byAccessor: ^(NSURL *newURL) {
-    handler([NSData dataWithContentsOfURL:newURL]);
-  }];
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSFileCoordinator *coordinator = [[NSFileCoordinator alloc] initWithFilePresenter:self];
+    [coordinator coordinateReadingItemAtURL:[self URLWithKey:key] options:NSFileCoordinatorReadingWithoutChanges error:NULL byAccessor: ^(NSURL *newURL) {
+      NSData *data = [NSData dataWithContentsOfURL:newURL];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        handler(data);
+      });
+    }];
+  });
 }
 
 - (void)dataForKeys:(NSArray *)keys completionHandler:(LCArrayBlock)success {
