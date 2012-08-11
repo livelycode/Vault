@@ -41,14 +41,14 @@
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
   self = [super init];
-  if (self != nil) {
-    _categories = [aDecoder decodeObject];
+  if (self) {
+    _categories = [aDecoder decodeObjectForKey:@"categories"];
   }
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-  [aCoder encodeObject:_categories];
+  [aCoder encodeObject:_categories forKey:@"categories"];
 }
 
 @end

@@ -16,7 +16,7 @@
 
 - (id)init {
   self = [super init];
-  if (self != nil) {
+  if (self) {
     _fields = [NSMutableDictionary dictionary];
     _entries = [NSMutableArray array];
   }
@@ -48,9 +48,10 @@
 */
 - (id)initWithCoder:(NSCoder *)aDecoder {
   self = [super init];
-  if (self != nil) {
+  if (self) {
     _fields = [aDecoder decodeObjectForKey:@"fields"];
     _entries = [aDecoder decodeObjectForKey:@"entries"];
+    self.name = [aDecoder decodeObjectForKey:@"name"];
   }
   return self;
 }
@@ -58,5 +59,6 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder {
   [aCoder encodeObject:_fields forKey:@"fields"];
   [aCoder encodeObject:_entries forKey:@"entries"];
+  [aCoder encodeObject:self.name forKey:@"name"];
 }
 @end
