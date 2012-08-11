@@ -137,10 +137,10 @@
 }
 
 - (id)unarchiver:(NSKeyedUnarchiver *)unarchiver didDecodeObject:(id)object {
-  if([[object class] isSubclassOfClass:[LCEntity class]]) {
+  if([object isKindOfClass:[LCEntity class]]) {
     [object setStore:_store];
   }
-  return nil;
+  return object;
 }
 
 @end
