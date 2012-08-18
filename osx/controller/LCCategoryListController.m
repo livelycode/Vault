@@ -44,13 +44,13 @@
 */
 
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-  CGRect rect = CGRectMake(0, 0, 100, 100);
-  NSTextField *text = [[NSTextField alloc] initWithFrame:NSRectFromCGRect(rect)];
+  NSString *identifier = [tableColumn identifier];
+  NSTextField *textField = [tableView makeViewWithIdentifier:identifier owner:self];
   LCEntity *categoryEntity = _categoryList.categories[row];
   [categoryEntity readObject:^(LCCategory *category) {
-    [text setStringValue:category.name];
+    [textField setStringValue:category.name];
   }];
-  return text;
+  return textField;
 }
 
 /*
