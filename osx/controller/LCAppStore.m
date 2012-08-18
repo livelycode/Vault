@@ -27,7 +27,7 @@ static LCAppStore *_sharedStore = nil;
     _store = [LCStore storeWithURL:[NSURL fileURLWithPath:@"/Users/mirko/test" isDirectory:YES]];
     LCCategoryList *categoryList = [[LCCategoryList alloc] init];
     NSArray *categoryNames = @[ @"category1", @"category2", @"category3" ];
-    for (int i=0; i<20; i++) {
+    for (int i=0; i<10; i++) {
       [categoryNames forEach:^(NSString *each) {
         LCCategory *category = [[LCCategory alloc] init];
         category.name = each;
