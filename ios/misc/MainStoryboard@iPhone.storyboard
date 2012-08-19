@@ -87,7 +87,13 @@
                             <outlet property="delegate" destination="4eU-QO-xYm" id="e6M-CM-al2"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="8v1-U5-YfY"/>
+                    <navigationItem key="navigationItem" id="8v1-U5-YfY">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="2LI-0c-e8m">
+                            <connections>
+                                <segue destination="UZU-Ar-apT" kind="modal" identifier="EntryDetailModalSegue" id="VV6-K4-h1a"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Dw-if-D7V" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -121,7 +127,22 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kSO-1u-yIu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2013" y="1074"/>
+            <point key="canvasLocation" x="2651" y="1080"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="8Q4-uq-ykJ">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="UZU-Ar-apT" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="2xS-xm-WSG">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="5nc-Zk-yyN" kind="relationship" relationship="rootViewController" id="prI-Jq-uLB"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CLZ-Iu-KBo" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2013" y="1708"/>
         </scene>
         <!--Category Detail Controller-->
         <scene sceneID="gwb-4C-dcC">
@@ -147,13 +168,7 @@
                             <outlet property="delegate" destination="ATP-fU-ZuS" id="dJL-rl-gqx"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="Coe-0R-0ZH">
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="ZM8-nz-hpg">
-                            <connections>
-                                <action selector="save:" destination="ATP-fU-ZuS" id="KX3-dZ-5SR"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="Coe-0R-0ZH"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jT9-WD-7a6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -182,18 +197,21 @@
         <class className="LCCategoryController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LCCategoryController.h"/>
         </class>
-        <class className="LCCategoryDetailController" superclassName="UITableViewController">
+        <class className="LCCategoryDetailController" superclassName="LCDetailController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LCCategoryDetailController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancel:"/>
-                <relationship kind="action" name="save:"/>
-            </relationships>
+        </class>
+        <class className="LCDetailController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LCDetailController.h"/>
         </class>
         <class className="LCEntryController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LCEntryController.h"/>
         </class>
         <class className="LCEntryDetailController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LCEntryDetailController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancel:"/>
+                <relationship kind="action" name="save:"/>
+            </relationships>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -202,6 +220,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="7v0-vh-SN3"/>
+        <segue reference="d6Y-Hr-9i8"/>
+        <segue reference="vTu-mN-YBt"/>
     </inferredMetricsTieBreakers>
 </document>

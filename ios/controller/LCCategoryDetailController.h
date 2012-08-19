@@ -1,6 +1,5 @@
 
 #import <UIKit/UIKit.h>
+#import "LCDetailController.h"
 
-@interface LCCategoryDetailController : UITableViewController
-@property(readwrite, assign, nonatomic) BOOL modalMode;
-@end
+@interface LCCategoryDetailController : LCDetailController @end

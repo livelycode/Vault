@@ -2,6 +2,7 @@
 #import "LCEntryDetailController.h"
 
 @implementation LCEntryDetailController
+#pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   return 1;
 }

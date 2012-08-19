@@ -1,6 +1,5 @@
 
 #import <UIKit/UIKit.h>
+#import "LCDetailController.h"
 
-@interface LCEntryDetailController : UITableViewController
-
-@end
+@interface LCEntryDetailController : LCDetailController @end
