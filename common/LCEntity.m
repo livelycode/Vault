@@ -3,14 +3,13 @@
 #import "LivelyBlocks.h"
 #import "LCStore.h"
 
-
-
 @implementation LCEntity {
   NSString *_objectID;
   id <NSCoding> _object;
   LCStore *_store;
   NSMutableArray *_observers;
   dispatch_queue_t _queue;
+  dispatch_queue_t _ioqueue;
 }
 
 + (id)entityWithObject:(id <NSCoding>)object store:(LCStore *)store {
@@ -19,6 +18,7 @@
 
 - (void)initializeQueue {
   _queue = dispatch_queue_create(NULL, DISPATCH_QUEUE_SERIAL);
+  _ioqueue = dispatch_queue_create(NULL, DISPATCH_QUEUE_SERIAL);
 }
 
 - (id)initWithID:(NSUUID *)anObjectID object:(id <NSCoding>)object store:(LCStore *)store {
@@ -39,27 +39,37 @@
 }
 
 - (void)addObserver:(id <LCEntityObserver>)observer {
-  [_observers addObject:observer];
-  [_store subscribeToKey:_objectID observer:self];
+  dispatch_sync(_queue, ^{
+    [_observers addObject:observer];
+    if (_observers.count == 1) {
+      [_store subscribeToKey:_objectID observer:self];
+    }
+  });
 }
 
 - (void)removeObserver:(id <LCEntityObserver>)observer {
-  [_observers removeObject:observer];
-  if ([_observers count] == 0) {
-    [_store unsubscribeFromKey:_objectID observer:self];
-  }
+  dispatch_sync(_queue, ^{
+    [_observers removeObject:observer];
+    if ([_observers count] == 0) {
+      [_store unsubscribeFromKey:_objectID observer:self];
+    }
+  });
 }
 
 - (void)emitUpdateEvent {
-  [_observers forEach:^(id <LCEntityObserver> each) {
-    [each updatedEntity:self];
-  }];
+  dispatch_sync(_queue, ^{
+    [_observers forEach:^(id <LCEntityObserver> each) {
+      [each updatedEntity:self];
+    }];
+  });
 }
 
 - (void)emitDeleteEvent {
-  [_observers forEach:^(id <LCEntityObserver> each) {
-    [each deletedEntity:self];
-  }];
+  dispatch_sync(_queue, ^{
+    [_observers forEach:^(id <LCEntityObserver> each) {
+      [each deletedEntity:self];
+    }];
+  });
 }
 
 - (NSData *)serialize:(id <NSCoding>)object {
@@ -75,7 +85,7 @@
 }
 
 - (void)uncacheObject {
-  dispatch_async(_queue, ^{
+  dispatch_async(_ioqueue, ^{
     _object = nil;    
   });
 }
@@ -91,7 +101,7 @@ LCEntityReadHandler readHandlerWrapper(LCEntityReadHandler handler) {
 
 - (void)readObject:(LCEntityReadHandler)handler {
   LCEntityReadHandler handlerWrapped = readHandlerWrapper(handler);
-  dispatch_async(_queue, ^{
+  dispatch_async(_ioqueue, ^{
     if (_object) {
       handlerWrapped(_object);
     } else {
@@ -104,7 +114,7 @@ LCEntityReadHandler readHandlerWrapper(LCEntityReadHandler handler) {
 }
 
 - (void)storeObject {
-  dispatch_async(_queue, ^{
+  dispatch_async(_ioqueue, ^{
     if (_object) {
       NSData *data = [self serialize:_object];
       [_store updateData:data forKey:_objectID];
@@ -123,10 +133,10 @@ LCEntityUpdateHandler updateHandlerWrapper(LCEntityUpdateHandler handler) {
 
 - (void)updateObject:(LCEntityUpdateHandler)handler {
   LCEntityUpdateHandler callbackWrapped = updateHandlerWrapper(handler);
-  dispatch_async(_queue, ^{
+  dispatch_async(_ioqueue, ^{
     [self readObject:^(id object) {
-      callbackWrapped(object, ^(id updatedObject) {
-        dispatch_async(_queue, ^{
+      callbackWrapped([object copy], ^(id updatedObject) {
+        dispatch_async(_ioqueue, ^{
           _object = updatedObject;
           [self storeObject];
         });
