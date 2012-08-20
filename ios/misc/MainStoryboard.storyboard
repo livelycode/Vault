@@ -20,6 +20,37 @@
             </objects>
             <point key="canvasLocation" x="394" y="412"/>
         </scene>
+        <!--Lock Controller-->
+        <scene sceneID="xEM-kf-GE5">
+            <objects>
+                <viewController storyboardIdentifier="LCLockController" id="4S3-VN-l7l" customClass="LCLockController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="E0Q-7Z-mLk">
+                        <rect key="frame" x="0.0" y="20" width="320" height="460"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textField translatesAutoresizingMaskIntoConstraints="NO" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" text="" id="ywh-BK-wwU">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="97" id="T01-sp-IhK"/>
+                                </constraints>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" secureTextEntry="YES"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <connections>
+                                    <outlet property="delegate" destination="4S3-VN-l7l" id="4Of-KE-1Np"/>
+                                </connections>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ywh-BK-wwU" firstAttribute="top" secondItem="E0Q-7Z-mLk" secondAttribute="top" constant="123" id="V20-52-cEj"/>
+                            <constraint firstItem="ywh-BK-wwU" firstAttribute="centerX" secondItem="E0Q-7Z-mLk" secondAttribute="centerX" type="default" id="lTJ-Iv-Ghs"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="c7M-57-VeU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="416" y="1602"/>
+        </scene>
         <!--Category Controller-->
         <scene sceneID="2To-G9-vi1">
             <objects>
@@ -206,12 +237,17 @@
         <class className="LCEntryController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LCEntryController.h"/>
         </class>
-        <class className="LCEntryDetailController" superclassName="UITableViewController">
+        <class className="LCEntryDetailController" superclassName="LCDetailController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LCEntryDetailController.h"/>
+        </class>
+        <class className="LCLockController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LCLockController.h"/>
             <relationships>
-                <relationship kind="action" name="cancel:"/>
-                <relationship kind="action" name="save:"/>
+                <relationship kind="action" name="unlock:"/>
             </relationships>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
