@@ -3,15 +3,22 @@
 #import "LivelyBlocks.h"
 #import "LCStore.h"
 
+
+
 @implementation LCEntity {
   NSString *_objectID;
   id <NSCoding> _object;
   LCStore *_store;
   NSMutableArray *_observers;
+  dispatch_queue_t _queue;
 }
 
 + (id)entityWithObject:(id <NSCoding>)object store:(LCStore *)store {
   return [[self alloc] initWithID:[NSUUID UUID] object:object store:store];
+}
+
+- (void)initializeQueue {
+  _queue = dispatch_queue_create(NULL, DISPATCH_QUEUE_SERIAL);
 }
 
 - (id)initWithID:(NSUUID *)anObjectID object:(id <NSCoding>)object store:(LCStore *)store {
@@ -21,6 +28,7 @@
     _store = store;
     _observers = [NSMutableArray array];
     _object = object;
+    [self initializeQueue];
     [self storeObject];
   }
   return self;
@@ -67,33 +75,64 @@
 }
 
 - (void)uncacheObject {
-  _object = nil;
+  dispatch_async(_queue, ^{
+    _object = nil;    
+  });
 }
 
+LCEntityReadHandler readHandlerWrapper(LCEntityReadHandler handler) {
+  dispatch_queue_t currentQueue = dispatch_get_current_queue();
+  return ^(id object) {
+    dispatch_async(currentQueue, ^{
+      handler(object);
+    });
+  };
+};
+
 - (void)readObject:(LCEntityReadHandler)handler {
-  if (_object) {
-    handler(_object);
-  } else {
-    [_store dataForKey:_objectID handler:^(NSData *data) {
-      _object = [self deserialize:data];
-      handler(_object);
-    }];
-  }
+  LCEntityReadHandler handlerWrapped = readHandlerWrapper(handler);
+  dispatch_async(_queue, ^{
+    if (_object) {
+      handlerWrapped(_object);
+    } else {
+      [_store dataForKey:_objectID handler:^(NSData *data) {
+        _object = [self deserialize:data];
+        handlerWrapped(_object);
+      }];
+    }
+  });
 }
 
 - (void)storeObject {
-  if (_object) {
-    NSData *data = [self serialize:_object];
-    [_store updateData:data forKey:_objectID];
-  }
+  dispatch_async(_queue, ^{
+    if (_object) {
+      NSData *data = [self serialize:_object];
+      [_store updateData:data forKey:_objectID];
+    }
+  });
+}
+
+LCEntityUpdateHandler updateHandlerWrapper(LCEntityUpdateHandler handler) {
+  dispatch_queue_t currentQueue = dispatch_get_current_queue();
+  return ^(id object, LCDoneHandler done) {
+    dispatch_async(currentQueue, ^{
+      handler(object, done);
+    });
+  };
 }
 
 - (void)updateObject:(LCEntityUpdateHandler)handler {
-  [self readObject:^(id object) {
-    handler(object, ^() {
-      [self storeObject];
-    });
-  }];
+  LCEntityUpdateHandler callbackWrapped = updateHandlerWrapper(handler);
+  dispatch_async(_queue, ^{
+    [self readObject:^(id object) {
+      callbackWrapped(object, ^(id updatedObject) {
+        dispatch_async(_queue, ^{
+          _object = updatedObject;
+          [self storeObject];
+        });
+      });
+    }];
+  });
 }
 
 - (void)deleteObject {
@@ -120,6 +159,7 @@
   self = [super init];
   if (self) {
     _objectID = [aDecoder decodeObjectForKey:@"objectID"];
+    [self initializeQueue];
   }
   return self;
 }

@@ -6,7 +6,7 @@
 
 @class LCStore, LCEventEmitter, LCEntity;
 
-typedef void(^LCDoneHandler)();
+typedef void(^LCDoneHandler)(id updatedObject);
 typedef void(^LCEntityReadHandler)(id object);
 typedef void(^LCEntityUpdateHandler)(id object, LCDoneHandler done);
 
