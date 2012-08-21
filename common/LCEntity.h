@@ -18,6 +18,7 @@ typedef void(^LCEntityUpdateHandler)(id object, LCDoneHandler done);
 
 @interface LCEntity : NSObject <LCDataObserver, NSCoding, NSKeyedUnarchiverDelegate>
 @property (readonly) NSUUID *objectID;
++ (id)entityWithID:(NSUUID *)objectID store:(LCStore *)store;
 + (id)entityWithObject:(id <NSCoding>)object store:(LCStore *)store;
 - (void)addObserver:(id <LCEntityObserver>)observer;
 - (void)removeObserver:(id <LCEntityObserver>)observer;

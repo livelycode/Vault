@@ -12,6 +12,10 @@
   dispatch_queue_t _ioqueue;
 }
 
++ (id)entityWithID:(NSUUID *)objectID store:(LCStore *)store {
+  return [[self alloc] initWithID:objectID object:nil store:store];
+}
+
 + (id)entityWithObject:(id <NSCoding>)object store:(LCStore *)store {
   return [[self alloc] initWithID:[NSUUID UUID] object:object store:store];
 }
@@ -85,7 +89,7 @@
 }
 
 - (void)uncacheObject {
-  dispatch_async(_ioqueue, ^{
+  dispatch_sync(_ioqueue, ^{
     _object = nil;    
   });
 }
@@ -154,10 +158,12 @@ LCEntityUpdateHandler updateHandlerWrapper(LCEntityUpdateHandler handler) {
 */
 
 - (void)updated:(NSString *)key {
+  [self uncacheObject];
   [self emitUpdateEvent];
 }
 
 - (void)deleted:(NSString *)key {
+  [self uncacheObject];
   [self emitDeleteEvent];
 }
 
