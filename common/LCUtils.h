@@ -3,6 +3,7 @@
 
 typedef void(^LCNotifyBlock)();
 typedef void(^LCBlock)();
+typedef void(^LCArrayBlock)(NSArray *dataObjects);
 
 
 NSData *LCCreateSerializedPropertyList(id anObject);

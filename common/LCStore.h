@@ -3,7 +3,6 @@
 #import "LCUtils.h"
 
 typedef void(^LCDataBlock)(NSData *data);
-typedef void(^LCArrayBlock)(NSArray *dataObjects);
 
 @protocol LCDataObserver <NSObject>
 - (void)updated:(NSString *)key;
