@@ -4,7 +4,7 @@
 
 typedef void(^LCDataBlock)(NSData *data);
 
-@protocol LCDataObserver <NSObject>
+@protocol LCKeyObserver <NSObject>
 - (void)updated:(NSString *)key;
 - (void)deleted:(NSString *)key;
 @end
@@ -15,6 +15,6 @@ typedef void(^LCDataBlock)(NSData *data);
 - (void)deleteDataForKey:(NSString *)key;
 - (void)dataForKey:(NSString *)key handler:(LCDataBlock)handler;
 - (void)dataForKeys:(NSArray *)keys completionHandler:(LCArrayBlock)success;
-- (void)subscribeToKey:(NSString *)key observer:(id <LCDataObserver>)observer;
-- (void)unsubscribeFromKey:(NSString *)key observer:(id <LCDataObserver>)observer;
+- (void)subscribeToKey:(NSString *)key observer:(id <LCKeyObserver>)observer;
+- (void)unsubscribeFromKey:(NSString *)key observer:(id <LCKeyObserver>)observer;
 @end

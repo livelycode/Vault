@@ -81,7 +81,7 @@
   return keyObservers;
 }
 
-- (void)subscribeToKey:(NSString *)key observer:(id<LCDataObserver>)observer {
+- (void)subscribeToKey:(NSString *)key observer:(id<LCKeyObserver>)observer {
   NSMutableArray *keyObservers = _observers[key];
   if (!keyObservers) {
     keyObservers = [NSMutableSet set];
@@ -90,7 +90,7 @@
   [keyObservers addObject:observer];
 }
 
-- (void)unsubscribeFromKey:(NSString *)key observer:(id<LCDataObserver>)observer {
+- (void)unsubscribeFromKey:(NSString *)key observer:(id<LCKeyObserver>)observer {
   [_observers[key] removeObject:observer];
 }
 

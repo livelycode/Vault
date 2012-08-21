@@ -16,7 +16,7 @@ typedef void(^LCEntityUpdateHandler)(id object, LCDoneHandler done);
 - (void)deletedEntity:(LCEntity *)entity;
 @end
 
-@interface LCEntity : NSObject <LCDataObserver, NSCoding, NSKeyedUnarchiverDelegate>
+@interface LCEntity : NSObject <LCKeyObserver, NSCoding, NSKeyedUnarchiverDelegate>
 @property (readonly) NSUUID *objectID;
 + (id)entityWithID:(NSUUID *)objectID store:(LCStore *)store;
 + (id)entityWithObject:(id <NSCoding>)object store:(LCStore *)store;
