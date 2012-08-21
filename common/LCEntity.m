@@ -121,7 +121,7 @@ LCEntityReadHandler readHandlerWrapper(LCEntityReadHandler handler) {
   dispatch_async(_ioqueue, ^{
     if (_object) {
       NSData *data = [self serialize:_object];
-      [_store updateData:data forKey:_objectID];
+      [_store storeData:data forKey:_objectID];
     }
   });
 }

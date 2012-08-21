@@ -11,8 +11,7 @@ typedef void(^LCDataBlock)(NSData *data);
 
 @interface LCStore : NSObject <NSFilePresenter>
 + (id)storeWithURL:(NSURL *)url;
-- (void)createData:(NSData *)data forKey:(NSString *)key;
-- (void)updateData:(NSData *)data forKey:(NSString *)key;
+- (void)storeData:(NSData *)data forKey:(NSString *)key;
 - (void)deleteDataForKey:(NSString *)key;
 - (void)dataForKey:(NSString *)key handler:(LCDataBlock)handler;
 - (void)dataForKeys:(NSArray *)keys completionHandler:(LCArrayBlock)success;
