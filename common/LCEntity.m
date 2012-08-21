@@ -1,22 +1,21 @@
 
 #import "LCEntity.h"
 #import "LivelyBlocks.h"
-#import "LCStore.h"
+#import "LCObjectStore.h"
 
 @implementation LCEntity {
   NSString *_objectID;
   id <NSCoding> _object;
-  LCStore *_store;
   NSMutableArray *_observers;
   dispatch_queue_t _queue;
   dispatch_queue_t _ioqueue;
 }
 
-+ (id)entityWithID:(NSUUID *)objectID store:(LCStore *)store {
++ (id)entityWithID:(NSUUID *)objectID store:(LCObjectStore *)store {
   return [[self alloc] initWithID:objectID object:nil store:store];
 }
 
-+ (id)entityWithObject:(id <NSCoding>)object store:(LCStore *)store {
++ (id)entityWithObject:(id <NSCoding>)object store:(LCObjectStore *)store {
   return [[self alloc] initWithID:[NSUUID UUID] object:object store:store];
 }
 
@@ -25,7 +24,7 @@
   _ioqueue = dispatch_queue_create(NULL, DISPATCH_QUEUE_SERIAL);
 }
 
-- (id)initWithID:(NSUUID *)anObjectID object:(id <NSCoding>)object store:(LCStore *)store {
+- (id)initWithID:(NSUUID *)anObjectID object:(id <NSCoding>)object store:(LCObjectStore *)store {
   self = [super init];
   if (self != nil) {
     _objectID = [anObjectID UUIDString];
@@ -80,13 +79,7 @@
   return [NSKeyedArchiver archivedDataWithRootObject:object];
 }
 
-- (id)deserialize:(NSData *)data {
-  NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-  unarchiver.delegate = self;
-  id object = [unarchiver decodeObjectForKey:@"root"];
-  [unarchiver finishDecoding];
-  return object;
-}
+
 
 - (void)uncacheObject {
   dispatch_sync(_ioqueue, ^{
@@ -109,8 +102,8 @@ LCEntityReadHandler readHandlerWrapper(LCEntityReadHandler handler) {
     if (_object) {
       handlerWrapped(_object);
     } else {
-      [_store dataForKey:_objectID handler:^(NSData *data) {
-        _object = [self deserialize:data];
+      [_store objectForKey:_objectID handler:^(id object) {
+        _object = object;
         handlerWrapped(_object);
       }];
     }
@@ -120,8 +113,7 @@ LCEntityReadHandler readHandlerWrapper(LCEntityReadHandler handler) {
 - (void)storeObject {
   dispatch_async(_ioqueue, ^{
     if (_object) {
-      NSData *data = [self serialize:_object];
-      [_store storeData:data forKey:_objectID];
+      [_store storeObject:_object forKey:_objectID];
     }
   });
 }
@@ -150,7 +142,7 @@ LCEntityUpdateHandler updateHandlerWrapper(LCEntityUpdateHandler handler) {
 }
 
 - (void)deleteObject {
-  [_store deleteDataForKey:_objectID];
+  [_store deleteObjectForKey:_objectID];
 }
 
 /*
@@ -182,21 +174,6 @@ LCEntityUpdateHandler updateHandlerWrapper(LCEntityUpdateHandler handler) {
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
   [aCoder encodeObject:_objectID forKey:@"objectID"];
-}
-
-/*
- NSUnarchiver delegate protocol
-*/
-
-- (void)setStore:(LCStore *)store {
-  _store = store;
-}
-
-- (id)unarchiver:(NSKeyedUnarchiver *)unarchiver didDecodeObject:(id)object {
-  if([object isKindOfClass:[LCEntity class]]) {
-    [object setStore:_store];
-  }
-  return object;
 }
 
 @end

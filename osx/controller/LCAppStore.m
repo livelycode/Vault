@@ -6,11 +6,13 @@
 #import "LCCategory.h"
 #import "LCEntry.h"
 #import "LivelyBlocks.h"
+#import "LCObjectStore.h"
 
 static LCAppStore *_sharedStore = nil;
 
 @implementation LCAppStore {
-  LCStore *_store;
+  LCObjectStore *_store;
+  
   LCEntity *_categoryListEntity;
 }
 
@@ -24,7 +26,8 @@ static LCAppStore *_sharedStore = nil;
 - (id)init {
   self = [super init];
   if (self) {
-    _store = [LCStore storeWithURL:[NSURL fileURLWithPath:@"/Users/mirko/test" isDirectory:YES]];
+    LCStore *store = [LCStore storeWithURL:[NSURL fileURLWithPath:@"/Users/mirko/test" isDirectory:YES]];
+    _store = [LCObjectStore objectStoreWithStore:store];
     LCCategoryList *categoryList = [[LCCategoryList alloc] init];
     NSArray *categoryNames = @[ @"category1", @"category2", @"category3" ];
     for (int i=0; i<10; i++) {

@@ -4,11 +4,6 @@
 
 typedef void(^LCDataBlock)(NSData *data);
 
-@protocol LCKeyObserver <NSObject>
-- (void)updated:(NSString *)key;
-- (void)deleted:(NSString *)key;
-@end
-
 @interface LCStore : NSObject <NSFilePresenter>
 + (id)storeWithURL:(NSURL *)url;
 - (void)storeData:(NSData *)data forKey:(NSString *)key;

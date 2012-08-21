@@ -1,10 +1,9 @@
 
 #import <Foundation/Foundation.h>
 #import "LCUtils.h"
-#import "LCStore.h"
 #import "LCEventEmitter.h"
 
-@class LCStore, LCEventEmitter, LCEntity;
+@class LCEventEmitter, LCEntity, LCObjectStore;
 
 typedef void(^LCDoneHandler)(id updatedObject);
 typedef void(^LCEntityReadHandler)(id object);
@@ -16,10 +15,11 @@ typedef void(^LCEntityUpdateHandler)(id object, LCDoneHandler done);
 - (void)deletedEntity:(LCEntity *)entity;
 @end
 
-@interface LCEntity : NSObject <LCKeyObserver, NSCoding, NSKeyedUnarchiverDelegate>
+@interface LCEntity : NSObject <LCKeyObserver, NSCoding>
 @property (readonly) NSUUID *objectID;
-+ (id)entityWithID:(NSUUID *)objectID store:(LCStore *)store;
-+ (id)entityWithObject:(id <NSCoding>)object store:(LCStore *)store;
+@property (readwrite) LCObjectStore *store;
++ (id)entityWithID:(NSUUID *)objectID store:(LCObjectStore *)store;
++ (id)entityWithObject:(id <NSCoding>)object store:(LCObjectStore *)store;
 - (void)addObserver:(id <LCEntityObserver>)observer;
 - (void)removeObserver:(id <LCEntityObserver>)observer;
 - (void)readObject:(LCEntityReadHandler)handler;
