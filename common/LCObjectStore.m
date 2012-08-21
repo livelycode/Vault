@@ -5,7 +5,7 @@
 
 @implementation LCObjectStore {
   LCStore *_store;
-  NSMutableArray *_objects;
+  NSMapTable *_objects;
 }
 
 + (id)objectStoreWithStore:(LCStore *)store {
@@ -16,11 +16,13 @@
   self = [super init];
   if (self) {
     _store = store;
+    _objects = [NSMapTable mapTableWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableWeakMemory];
   }
   return self;
 }
 
 - (void)storeObject:(id <NSCoding>)object forKey:(NSString *)key {
+  [_objects setObject:object forKey:key];
   NSData *data = [NSKeyedArchiver archivedDataWithRootObject:object];
   [_store storeData:data forKey:key];
 }
@@ -38,17 +40,14 @@
 }
 
 - (void)objectForKey:(NSString *)key handler:(LCObjectBlock)handler {
+  id cachedObject = [_objects objectForKey:key];
+  if (cachedObject) {
+    handler(cachedObject);
+  }
   [_store dataForKey:key handler:^(NSData *data) {
-    handler([self deserialize:data]);
-  }];
-}
-
-- (void)objectsForKeys:(NSArray *)keys completionHandler:(LCArrayBlock)success {
-  [_store dataForKeys:keys completionHandler:^(NSArray *dataObjects) {
-    NSArray *objects = [dataObjects collect:^id(id each) {
-      return [self deserialize:each];
-    }];
-    success(objects);
+    id cachedObject = [self deserialize:data];
+    [_objects setObject:cachedObject forKey:key];
+    handler(cachedObject);
   }];
 }
 
