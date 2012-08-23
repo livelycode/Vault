@@ -1,26 +1,60 @@
 
 #import "LCAppDelegate.h"
-#import "LCLockController.h"
+#import "LCSettingsStore.h"
 
-@implementation LCAppDelegate
+@implementation LCAppDelegate {
+  BOOL _isLocked;
+}
+
+#pragma mark - Class
 + (LCAppDelegate *)sharedAppDelegate {
   return [UIApplication sharedApplication].delegate;
 }
 
+#pragma mark - Overridden
+- (id)init {
+  self = [super init];
+  if (self != nil) {
+    _isLocked = NO;
+  }
+  return self;
+}
+
+#pragma mark - Locking
+- (void)lock {
+  if (!_isLocked) {
+    [self presentInitialViewControllerFromStoryboardWithName:@"Lock"];
+    _isLocked = YES;
+  }
+}
+
+- (void)unlock {
+  if (_isLocked) {
+    [[self topViewController] dismissViewControllerAnimated:YES completion:nil];
+    _isLocked = NO;
+  }
+}
+
+#pragma mark - UIApplicationDelegate
 - (void)applicationDidBecomeActive:(UIApplication *)application {
   [self lock];
+  if (![LCSettingsStore sharedSettingsStore].setupCompleted) {
+    [self presentInitialViewControllerFromStoryboardWithName:@"Setup"];
+  }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
   [self lock];
 }
 
-- (void)lock {
-  if (!self.isLocked) {
-    LCLockController *lockController = [LCLockController instantiateFromStoryboard];
-    id rootController = self.window.rootViewController;
-    [[rootController visibleViewController] presentViewController:lockController animated:NO completion:nil];
-    self.isLocked = YES;
-  }
+#pragma mark - Private
+- (UIViewController *)topViewController {
+  id rootViewController = self.window.rootViewController;
+  return [rootViewController visibleViewController];
+}
+
+- (void)presentInitialViewControllerFromStoryboardWithName:(NSString *)name {
+  UIViewController *viewController = [[UIStoryboard storyboardWithName:name bundle:nil] instantiateInitialViewController];
+  [[self topViewController] presentViewController:viewController animated:NO completion:nil];
 }
 @end
