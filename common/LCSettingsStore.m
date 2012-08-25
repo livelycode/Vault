@@ -1,4 +1,5 @@
 
+#include <CommonCrypto/CommonCryptor.h>
 #import "LCSettingsStore.h"
 
 #pragma mark Class state
@@ -6,6 +7,7 @@ LCSettingsStore *singleton = nil;
 
 #pragma mark - NSUserDefault keys
 NSString *LCSetupCompletedKey = @"LCSetupCompleted";
+NSString *LCCloudStorageKey = @"LCCloudStorage";
 
 @implementation LCSettingsStore
 #pragma mark - Class
@@ -32,5 +34,13 @@ NSString *LCSetupCompletedKey = @"LCSetupCompleted";
 
 - (void)setSetupCompleted:(BOOL)setupCompleted {
   [[NSUserDefaults standardUserDefaults] setBool:setupCompleted forKey:LCSetupCompletedKey];
+}
+
+- (BOOL)cloudStorage {
+  return [[NSUserDefaults standardUserDefaults] boolForKey:LCCloudStorageKey];
+}
+
+- (void)setCloudStorage:(BOOL)cloudStorage {
+  [[NSUserDefaults standardUserDefaults] setBool:cloudStorage forKey:LCCloudStorageKey];
 }
 @end

@@ -23,7 +23,7 @@
 #pragma mark - Locking
 - (void)lock {
   if (!_isLocked) {
-    [self presentInitialViewControllerFromStoryboardWithName:@"Lock"];
+    [self presentInitialViewControllerFromStoryboardWithName:@"Lock" animated:NO];
     _isLocked = YES;
   }
 }
@@ -39,7 +39,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
   [self lock];
   if (![LCSettingsStore sharedSettingsStore].setupCompleted) {
-    [self presentInitialViewControllerFromStoryboardWithName:@"Setup"];
+    [self presentInitialViewControllerFromStoryboardWithName:@"Setup" animated:YES];
   }
 }
 
@@ -53,8 +53,8 @@
   return [rootViewController visibleViewController];
 }
 
-- (void)presentInitialViewControllerFromStoryboardWithName:(NSString *)name {
+- (void)presentInitialViewControllerFromStoryboardWithName:(NSString *)name animated:(BOOL)animated {
   UIViewController *viewController = [[UIStoryboard storyboardWithName:name bundle:nil] instantiateInitialViewController];
-  [[self topViewController] presentViewController:viewController animated:NO completion:nil];
+  [[self topViewController] presentViewController:viewController animated:animated completion:nil];
 }
 @end
