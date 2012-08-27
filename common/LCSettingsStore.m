@@ -2,6 +2,7 @@
 #include <CommonCrypto/CommonCryptor.h>
 #import "LCSettingsStore.h"
 
+@implementation LCSettingsStore
 #pragma mark Class state
 LCSettingsStore *singleton = nil;
 
@@ -9,7 +10,6 @@ LCSettingsStore *singleton = nil;
 NSString *LCSetupCompletedKey = @"LCSetupCompleted";
 NSString *LCCloudStorageKey = @"LCCloudStorage";
 
-@implementation LCSettingsStore
 #pragma mark - Class
 + (LCSettingsStore *)sharedSettingsStore {
   if (singleton == nil) {
