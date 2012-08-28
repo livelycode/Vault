@@ -1,7 +1,6 @@
 
 #import "LCAppDelegate.h"
 #import "LCSettingsStore.h"
-#import "LCEncryptedData.h"
 
 @implementation LCAppDelegate {
   BOOL _isLocked;

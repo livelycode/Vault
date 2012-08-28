@@ -13,23 +13,25 @@ NSString *LCEncryptedDataCiphertextKey = @"LCEncryptedCiphertext";
 
 #pragma mark - Class
 + (id)encryptedDataWithData:(NSData *)data password:(NSString *)password {
-  return [[self alloc] initWithData:data password:password];
+  NSData *salt = LCEncryptedDataRandomData(16);
+  return [[self alloc] initWithData:data password:password salt:salt];
+}
+
++ (id)encryptedDataWithPassword:(NSString *)password {
+  NSData *salt = LCEncryptedDataRandomData(16);
+  NSData *hash = LCEncryptedDataAES256Key(password, salt);
+  return [[self alloc] initWithData:hash password:password salt:salt];
 }
 
 #pragma mark - Decryption
-- (NSData *)decryptWithPassword:(NSString *)password {
-  return LCEncryptedDataCryptData(kCCDecrypt, _ciphertext, password, _salt, _initializationVector);
+- (BOOL)isEqualToPassword:(NSString *)password {
+  NSData *hash = LCEncryptedDataAES256Key(password, _salt);
+  NSData *decryptedHash = [self decryptWithPassword:password];
+  return [hash isEqualToData:decryptedHash];
 }
 
-#pragma mark - Overridden
-- (id)initWithData:(NSData *)data password:(NSString *)password {
-  self = [super init];
-  if (self != nil) {
-    _salt = LCEncryptedDataRandomData(8);
-    _initializationVector = LCEncryptedDataRandomData(kCCBlockSizeAES128);
-    _ciphertext = LCEncryptedDataCryptData(kCCEncrypt, data, password, _salt, _initializationVector);
-  }
-  return self;
+- (NSData *)decryptWithPassword:(NSString *)password {
+  return LCEncryptedDataCryptData(kCCDecrypt, _ciphertext, password, _salt, _initializationVector);
 }
 
 #pragma mark - NSCoding
@@ -50,6 +52,16 @@ NSString *LCEncryptedDataCiphertextKey = @"LCEncryptedCiphertext";
 }
 
 #pragma mark - Private
+- (id)initWithData:(NSData *)data password:(NSString *)password salt:(NSData *)salt {
+  self = [super init];
+  if (self != nil) {
+    _salt = salt;
+    _initializationVector = LCEncryptedDataRandomData(kCCBlockSizeAES128);
+    _ciphertext = LCEncryptedDataCryptData(kCCEncrypt, data, password, _salt, _initializationVector);
+  }
+  return self;
+}
+
 NSData *LCEncryptedDataRandomData(size_t length) {
   NSMutableData *data = [NSMutableData dataWithLength:length];
   uint8_t *buffer = [data mutableBytes];
@@ -66,7 +78,7 @@ NSData *LCEncryptedDataAES256Key(NSString *password, NSData *salt) {
   size_t saltLength = [salt length];
   uint rounds = 1024;
   uint8_t *buffer = [key mutableBytes];
-  int result = CCKeyDerivationPBKDF(kCCPBKDF2, passwordBytes, passwordLength, saltBytes, saltLength, kCCPRFHmacAlgSHA1, rounds, buffer, kCCKeySizeAES256);
+  int result = CCKeyDerivationPBKDF(kCCPBKDF2, passwordBytes, passwordLength, saltBytes, saltLength, kCCPRFHmacAlgSHA512, rounds, buffer, kCCKeySizeAES256);
   NSCAssert(result == kCCSuccess, @"AES-256 key creation failed");
   return key;
 }
