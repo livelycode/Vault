@@ -9,6 +9,9 @@
 #import <Cocoa/Cocoa.h>
 #import "LCEntity.h"
 
+@class LCCategory;
+
 @interface LCCategoryListController : NSObject <NSTableViewDelegate, NSTableViewDataSource, LCEntityObserver> {
+  IBOutlet LCCategory *selectedCategory;
 }
 @end

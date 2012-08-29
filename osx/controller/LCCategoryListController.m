@@ -18,7 +18,7 @@
   LCCategoryList *_categoryList;
 }
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (id)init {
   self = [super init];
   if (self) {
     _categoryListEntity = [[LCAppStore store] categoryList];

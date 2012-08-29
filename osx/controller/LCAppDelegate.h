@@ -13,5 +13,4 @@
 @interface LCAppDelegate : NSObject <NSApplicationDelegate>
 @property (readonly) LCStore *store;
 @property (assign) IBOutlet NSWindow *window;
-
 @end
