@@ -54,6 +54,13 @@
 }
 
 - (void)presentInitialViewControllerFromStoryboardWithName:(NSString *)name animated:(BOOL)animated {
+  UIUserInterfaceIdiom idiom = [UIDevice currentDevice].userInterfaceIdiom;
+  if (idiom == UIUserInterfaceIdiomPhone) {
+    name = [name stringByAppendingString:@"~iphone"];
+  }
+  if (idiom == UIUserInterfaceIdiomPad) {
+    name = [name stringByAppendingString:@"~ipad"];
+  }
   UIViewController *viewController = [[UIStoryboard storyboardWithName:name bundle:nil] instantiateInitialViewController];
   [[self topViewController] presentViewController:viewController animated:animated completion:nil];
 }

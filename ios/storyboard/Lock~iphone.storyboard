@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2829" systemVersion="12A269" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="CN8-TC-oc3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2829" systemVersion="12B19" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="CN8-TC-oc3">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1914"/>
     </dependencies>
@@ -12,9 +12,9 @@
                         <rect key="frame" x="0.0" y="20" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <textField translatesAutoresizingMaskIntoConstraints="NO" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" text="" id="LXN-zQ-LmO">
+                            <textField translatesAutoresizingMaskIntoConstraints="NO" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" text="" textAlignment="center" id="LXN-zQ-LmO">
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="97" id="H4W-Tq-FDO"/>
+                                    <constraint firstAttribute="width" constant="200" id="yi5-iB-Nr9"/>
                                 </constraints>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" secureTextEntry="YES"/>
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -26,8 +26,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="LXN-zQ-LmO" firstAttribute="centerX" secondItem="cf9-n0-Wpl" secondAttribute="centerX" type="default" id="FyJ-Ub-9UT"/>
                             <constraint firstItem="LXN-zQ-LmO" firstAttribute="top" secondItem="cf9-n0-Wpl" secondAttribute="top" constant="123" id="fJJ-vZ-5x3"/>
-                            <constraint firstItem="LXN-zQ-LmO" firstAttribute="centerX" secondItem="cf9-n0-Wpl" secondAttribute="centerX" type="default" id="s6c-SE-EDl"/>
                         </constraints>
                     </view>
                 </viewController>

@@ -1,9 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2519" systemVersion="12A206j" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2829" systemVersion="12B19" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="aKD-kU-5me">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1856"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1914"/>
     </dependencies>
-    <scenes/>
+    <scenes>
+        <!--Lock Controller-->
+        <scene sceneID="pYb-HD-Ro5">
+            <objects>
+                <viewController id="aKD-kU-5me" customClass="LCLockController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="WGX-8K-s6z">
+                        <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textField translatesAutoresizingMaskIntoConstraints="NO" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" text="" id="eyT-l6-8pn">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="NQ9-vk-lFC"/>
+                                </constraints>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" secureTextEntry="YES"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <connections>
+                                    <outlet property="delegate" destination="aKD-kU-5me" id="gEx-xt-JD9"/>
+                                </connections>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="eyT-l6-8pn" firstAttribute="top" secondItem="WGX-8K-s6z" secondAttribute="top" constant="267" id="g94-AP-QBB"/>
+                            <constraint firstItem="eyT-l6-8pn" firstAttribute="centerX" secondItem="WGX-8K-s6z" secondAttribute="centerX" type="default" id="sUK-00-uR1"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eLq-bI-jpp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="175" y="205"/>
+        </scene>
+    </scenes>
+    <classes>
+        <class className="LCLockController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LCLockController.h"/>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

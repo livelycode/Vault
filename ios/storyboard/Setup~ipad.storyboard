@@ -1,9 +1,125 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2519" systemVersion="12A206j" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2829" systemVersion="12B19" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="Bpf-f4-nX0">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1856"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1914"/>
     </dependencies>
-    <scenes/>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="ldf-bc-pyZ">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="Bpf-f4-nX0" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="fcS-H9-3fd">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="4dm-6Q-fa9" kind="relationship" relationship="rootViewController" id="mzE-2O-qYQ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1NN-q4-LfL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-168" y="152"/>
+        </scene>
+        <!--Storage Setup Controller-->
+        <scene sceneID="y7A-gL-GiD">
+            <objects>
+                <viewController id="4dm-6Q-fa9" customClass="LCStorageSetupController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="oDM-9b-crh">
+                        <rect key="frame" x="0.0" y="64" width="768" height="960"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <switch translatesAutoresizingMaskIntoConstraints="NO" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="x8l-IS-qbh"/>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="x8l-IS-qbh" secondAttribute="bottom" constant="351" id="VVv-1t-DMK"/>
+                            <constraint firstItem="x8l-IS-qbh" firstAttribute="centerX" secondItem="oDM-9b-crh" secondAttribute="centerX" type="default" id="yLI-YY-tpB"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="ykX-6S-1SP">
+                        <barButtonItem key="rightBarButtonItem" title="Next" id="u2b-dO-YV8">
+                            <connections>
+                                <action selector="saveSettings:" destination="4dm-6Q-fa9" id="KNs-YG-1tl"/>
+                                <segue destination="Fqm-I5-3wG" kind="push" id="UYl-nn-TcE"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="_iCloudSwitch" destination="x8l-IS-qbh" id="FjC-0j-pdP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wau-rr-9Fk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="728" y="152"/>
+        </scene>
+        <!--Password Setup Controller-->
+        <scene sceneID="DjR-OO-rSs">
+            <objects>
+                <viewController id="Fqm-I5-3wG" customClass="LCPasswordSetupController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eBM-PP-wNG">
+                        <rect key="frame" x="0.0" y="64" width="768" height="960"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textField translatesAutoresizingMaskIntoConstraints="NO" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" minimumFontSize="17" clearButtonMode="whileEditing" text="" textAlignment="center" id="oC2-1A-GvT">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="nUL-fz-hgm"/>
+                                </constraints>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="next" secureTextEntry="YES"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <connections>
+                                    <action selector="validatePassword:" destination="Fqm-I5-3wG" eventType="editingChanged" id="JmP-3F-XqH"/>
+                                </connections>
+                            </textField>
+                            <textField translatesAutoresizingMaskIntoConstraints="NO" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Verification" minimumFontSize="17" clearButtonMode="whileEditing" text="" textAlignment="center" id="KZq-PZ-XOY">
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="next" secureTextEntry="YES"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <connections>
+                                    <action selector="validatePassword:" destination="Fqm-I5-3wG" eventType="editingChanged" id="vHi-eQ-hk5"/>
+                                </connections>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="KZq-PZ-XOY" firstAttribute="centerX" secondItem="eBM-PP-wNG" secondAttribute="centerX" type="default" id="KQg-xj-MAT"/>
+                            <constraint firstItem="KZq-PZ-XOY" firstAttribute="top" secondItem="oC2-1A-GvT" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="TIw-Qt-IY5"/>
+                            <constraint firstItem="KZq-PZ-XOY" firstAttribute="trailing" secondItem="oC2-1A-GvT" secondAttribute="trailing" type="default" id="fWu-Bw-lHo"/>
+                            <constraint firstItem="KZq-PZ-XOY" firstAttribute="leading" secondItem="oC2-1A-GvT" secondAttribute="leading" type="default" id="io7-1e-QVZ"/>
+                            <constraint firstItem="oC2-1A-GvT" firstAttribute="top" secondItem="eBM-PP-wNG" secondAttribute="top" constant="168" id="vwO-We-0m4"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="RIT-fW-pIm">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" systemItem="done" id="tns-hJ-xaY">
+                            <connections>
+                                <action selector="finishSetup:" destination="Fqm-I5-3wG" id="xmn-7P-9Nv"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="_passwordField" destination="oC2-1A-GvT" id="qJ7-in-T5t"/>
+                        <outlet property="_verificationField" destination="KZq-PZ-XOY" id="ygC-Ga-G8f"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BtG-pe-7Bj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1626" y="152"/>
+        </scene>
+    </scenes>
+    <classes>
+        <class className="LCPasswordSetupController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LCPasswordSetupController.h"/>
+            <relationships>
+                <relationship kind="action" name="finishSetup:"/>
+                <relationship kind="action" name="validatePassword:"/>
+            </relationships>
+        </class>
+        <class className="LCStorageSetupController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LCStorageSetupController.h"/>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>
