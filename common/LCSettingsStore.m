@@ -1,5 +1,4 @@
 
-#include <CommonCrypto/CommonCryptor.h>
 #import "LCSettingsStore.h"
 
 @implementation LCSettingsStore
@@ -9,6 +8,7 @@ LCSettingsStore *singleton = nil;
 #pragma mark - NSUserDefault keys
 NSString *LCSetupCompletedKey = @"LCSetupCompleted";
 NSString *LCCloudStorageKey = @"LCCloudStorage";
+NSString *LCEncryptedPasswordKey = @"LCEncryptedPasswordKey";
 
 #pragma mark - Class
 + (LCSettingsStore *)sharedSettingsStore {
@@ -42,5 +42,15 @@ NSString *LCCloudStorageKey = @"LCCloudStorage";
 
 - (void)setCloudStorage:(BOOL)cloudStorage {
   [[NSUserDefaults standardUserDefaults] setBool:cloudStorage forKey:LCCloudStorageKey];
+}
+
+- (LCEncryptedData *)encryptedPassword {
+  NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:LCEncryptedPasswordKey];
+  return [NSKeyedUnarchiver unarchiveObjectWithData:data];
+}
+
+- (void)setEncryptedPassword:(LCEncryptedData *)encryptedPassword {
+  NSData *data = [NSKeyedArchiver archivedDataWithRootObject:encryptedPassword];
+  [[NSUserDefaults standardUserDefaults] setObject:data forKey:LCEncryptedPasswordKey];
 }
 @end

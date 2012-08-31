@@ -22,13 +22,13 @@ NSString *LCEncryptedDataCiphertextKey = @"LCEncryptedCiphertext";
 
 + (id)encryptedDataWithPassword:(NSString *)password {
   NSData *salt = LCEncryptedDataRandomData(16);
-  NSData *hash = LCEncryptedDataAES256Key(password, salt);
+  NSData *hash = LCEncryptedDataKey(password, salt);
   return [[self alloc] initWithData:hash password:password salt:salt];
 }
 
 #pragma mark - Decryption
 - (BOOL)isEqualToPassword:(NSString *)password {
-  NSData *hash = LCEncryptedDataAES256Key(password, _salt);
+  NSData *hash = LCEncryptedDataKey(password, _salt);
   NSData *decryptedHash = [self decryptWithPassword:password];
   return [hash isEqualToData:decryptedHash];
 }
@@ -73,13 +73,13 @@ NSData *LCEncryptedDataRandomData(size_t length) {
   return data;
 }
 
-NSData *LCEncryptedDataAES256Key(NSString *password, NSData *salt) {
+NSData *LCEncryptedDataKey(NSString *password, NSData *salt) {
   NSMutableData *key = [NSMutableData dataWithLength:kCCKeySizeAES256];
   const char *passwordBytes = [password UTF8String];
   size_t passwordLength = [password lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
   const uint8_t *saltBytes = [salt bytes];
   size_t saltLength = [salt length];
-  uint rounds = 1024;
+  uint rounds = 8192;
   uint8_t *buffer = [key mutableBytes];
   int result = CCKeyDerivationPBKDF(kCCPBKDF2, passwordBytes, passwordLength, saltBytes, saltLength, kCCPRFHmacAlgSHA512, rounds, buffer, kCCKeySizeAES256);
   NSCAssert(result == kCCSuccess, @"AES-256 key creation failed");
@@ -87,7 +87,7 @@ NSData *LCEncryptedDataAES256Key(NSString *password, NSData *salt) {
 }
 
 NSData *LCEncryptedDataCryptData(CCOperation operation, NSData *data, NSString *password, NSData *salt, NSData *initializationVector) {
-  NSData *key = LCEncryptedDataAES256Key(password, salt);
+  NSData *key = LCEncryptedDataKey(password, salt);
   const void *keyBytes = [key bytes];
   const void *ivBytes = [initializationVector bytes];
   const void *dataBytes = [data bytes];
