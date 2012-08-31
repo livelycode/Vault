@@ -20,4 +20,25 @@
   BOOL validVarification = [_verificationField.text isEqualToString:_passwordField.text];
   self.navigationItem.rightBarButtonItem.enabled = notEmpty && validVarification;
 }
+
+#pragma mark - UITextFieldDelegate
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+  if (textField == _passwordField) {
+    [_verificationField becomeFirstResponder];
+  }
+  if (textField == _verificationField) {
+    [_passwordField becomeFirstResponder];
+  }
+  return NO;
+}
+
+#pragma mark - Overridden
+- (void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+  [_passwordField becomeFirstResponder];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+  [self.view endEditing:animated];
+}
 @end
