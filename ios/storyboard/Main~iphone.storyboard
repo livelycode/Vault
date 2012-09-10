@@ -25,7 +25,7 @@
             <objects>
                 <tableViewController id="9uW-wu-XI0" customClass="LCCategoryController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="td6-u5-uPp">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -65,7 +65,7 @@
             <objects>
                 <tableViewController id="4eU-QO-xYm" customClass="LCEntryController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="V2L-De-Fpj">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -149,7 +149,7 @@
             <objects>
                 <tableViewController id="ATP-fU-ZuS" customClass="LCCategoryDetailController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="pmy-8d-XlY">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="460"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -168,7 +168,9 @@
                             <outlet property="delegate" destination="ATP-fU-ZuS" id="dJL-rl-gqx"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="Coe-0R-0ZH"/>
+                    <navigationItem key="navigationItem" id="Coe-0R-0ZH">
+                        <nil key="title"/>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jT9-WD-7a6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -217,6 +219,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="prI-Jq-uLB"/>
-        <segue reference="vTu-mN-YBt"/>
+        <segue reference="7v0-vh-SN3"/>
     </inferredMetricsTieBreakers>
 </document>

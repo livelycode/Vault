@@ -1,6 +1,7 @@
 
 #import "LCAppDelegate.h"
 #import "LCSettingsStore.h"
+#import "LCAppearance.h"
 
 @implementation LCAppDelegate {
   BOOL _isLocked;
@@ -36,6 +37,12 @@
 }
 
 #pragma mark - UIApplicationDelegate
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  [LCAppearance setNavigationBarAppearance];
+  [LCAppearance setBarButtonItemAppearance];
+  return YES;
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application {
   [self lock];
   if (![LCSettingsStore sharedSettingsStore].setupCompleted) {
