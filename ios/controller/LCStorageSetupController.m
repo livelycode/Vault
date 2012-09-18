@@ -1,12 +1,20 @@
 
 #import "LCStorageSetupController.h"
 #import "LCSettingsStore.h"
+#import "LCAppearance.h"
 
 @implementation LCStorageSetupController {
-  IBOutlet UISwitch *_iCloudSwitch;
+  IBOutlet UITableViewCell *_cloudCell;
+}
+
+- (void)viewDidLoad {
+  _cloudCell.accessoryView = [[UISwitch alloc] initWithFrame:CGRectZero];
+  NSLog(@"%@", self.tableView.backgroundView);
+  [LCAppearance configureSetupView:self.tableView];
 }
 
 - (IBAction)saveSettings:(id)sender {
-  [LCSettingsStore sharedSettingsStore].cloudStorage = _iCloudSwitch.on;
+  id cloudSwitch = _cloudCell.accessoryView;
+  [LCSettingsStore sharedSettingsStore].cloudStorage = [cloudSwitch isOn];
 }
 @end

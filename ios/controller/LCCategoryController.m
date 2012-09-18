@@ -1,6 +1,7 @@
 
 #import "LCCategoryController.h"
 #import "LCCategoryDetailController.h"
+#import "LCAppearance.h"
 
 @implementation LCCategoryController
 #pragma mark - Overriden

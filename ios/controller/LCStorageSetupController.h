@@ -1,6 +1,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LCStorageSetupController : UIViewController
+@interface LCStorageSetupController : UITableViewController
 
 @end

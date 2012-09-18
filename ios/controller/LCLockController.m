@@ -18,10 +18,6 @@
 
 #pragma mark - Overridden
 - (void)viewDidLoad {
-  CALayer *superLayer = self.view.layer;
-  CALayer *gradientLayer = [LCAppearance gradientLayerWithFrame:superLayer.bounds];
-  CALayer *grainLayer = [LCAppearance grainLayerWithFrame:superLayer.bounds];
-  [superLayer insertSublayer:gradientLayer atIndex:0];
-  [superLayer insertSublayer:grainLayer atIndex:1];
+  [LCAppearance configureLockView:self.view];
 }
 @end

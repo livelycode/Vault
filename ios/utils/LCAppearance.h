@@ -4,8 +4,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface LCAppearance : NSObject
-+ (void)setNavigationBarAppearance;
-+ (void)setBarButtonItemAppearance;
-+ (CALayer *)gradientLayerWithFrame:(CGRect)frame;
-+ (CALayer *)grainLayerWithFrame:(CGRect)frame;
++ (void)setThemeAppearance:(BOOL)custom;
++ (void)configureLockView:(UIView *)view;
++ (void)configureSetupView:(UITableView *)view;
 @end

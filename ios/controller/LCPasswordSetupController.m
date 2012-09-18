@@ -33,11 +33,6 @@
 }
 
 #pragma mark - Overridden
-- (void)viewDidAppear:(BOOL)animated {
-  [super viewDidAppear:animated];
-  [_passwordField becomeFirstResponder];
-}
-
 - (void)viewWillDisappear:(BOOL)animated {
   [self.view endEditing:animated];
 }
