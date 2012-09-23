@@ -15,9 +15,4 @@
   }
   return NO;
 }
-
-#pragma mark - Overridden
-- (void)viewDidLoad {
-  [LCAppearance configureLockView:self.view];
-}
 @end
