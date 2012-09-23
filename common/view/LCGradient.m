@@ -19,8 +19,8 @@
 + (void)drawRadialGradientInRect:(CGRect)rect {
   CGFloat centerX = CGRectGetMidX(rect);
   CGFloat centerY = CGRectGetMidY(rect);
-  CGFloat width = CGRectGetWidth(rect);
-  CGFloat height = CGRectGetHeight(rect);
+  CGFloat width = CGRectGetWidth(rect) / 2.0;
+  CGFloat height = CGRectGetHeight(rect) / 2.0;
   CGPoint center = CGPointMake(centerX, centerY);
   CGFloat radius = MAX(width, height);
   CGContextRef context = UIGraphicsGetCurrentContext();
@@ -37,7 +37,7 @@ CGFloat LC8BitValue(CGFloat value) {
 
 CGGradientRef LCGradientCreate(void) {
   CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
-  CGFloat alpha = LC8BitValue(120.0);
+  CGFloat alpha = LC8BitValue(140.0);
   CGFloat components[] = {1.0, 1.0, 1.0, alpha, 0.0, 0.0, 0.0, alpha};
   CGGradientRef gradient = CGGradientCreateWithColorComponents(space, components, NULL, 2);
   CGColorSpaceRelease(space);

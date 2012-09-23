@@ -1,6 +1,7 @@
 
 #import "LCPasswordSetupController.h"
 #import "LCSettingsStore.h"
+#import "LCAppearance.h"
 
 @implementation LCPasswordSetupController {
   IBOutlet UITextField *_passwordField;
@@ -33,6 +34,10 @@
 }
 
 #pragma mark - Overridden
+- (void)viewDidLoad {
+  self.tableView.backgroundView = [LCAppearance setupBackgroundView];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
   [self.view endEditing:animated];
 }
