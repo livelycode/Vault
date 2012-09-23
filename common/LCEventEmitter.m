@@ -43,7 +43,7 @@
 - (void)removeHandlerWithID:(NSUUID *)handlerID forEvent:(NSString *)event {
   NSMutableArray *eventHandlers = [self handlersForEvent:event];
   [eventHandlers forEach:^(NSDictionary *each) {
-    if ([each[@"id"] isEqualTo: handlerID]) {
+    if ([each[@"id"] isEqual: handlerID]) {
       [eventHandlers removeObject:each];
     }
   }];
