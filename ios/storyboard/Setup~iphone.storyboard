@@ -124,15 +124,15 @@
                             </constraints>
                         </view>
                         <view key="tableFooterView" contentMode="scaleToFill" id="5Lp-ho-ryE">
-                            <rect key="frame" x="0.0" y="189" width="320" height="200"/>
+                            <rect key="frame" x="0.0" y="189" width="320" height="220"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="top" image="Cloud~iphone.png" translatesAutoresizingMaskIntoConstraints="NO" id="An2-hC-vWa"/>
+                                <imageView userInteractionEnabled="NO" contentMode="top" image="Lock~iphone.png" translatesAutoresizingMaskIntoConstraints="NO" id="An2-hC-vWa"/>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
+                                <constraint firstItem="An2-hC-vWa" firstAttribute="centerY" secondItem="5Lp-ho-ryE" secondAttribute="centerY" type="default" id="7WI-86-Tou"/>
                                 <constraint firstItem="An2-hC-vWa" firstAttribute="centerX" secondItem="5Lp-ho-ryE" secondAttribute="centerX" type="default" id="hwB-Nq-Lxn"/>
-                                <constraint firstItem="An2-hC-vWa" firstAttribute="centerY" secondItem="5Lp-ho-ryE" secondAttribute="centerY" type="default" id="xK0-aA-yVp"/>
                             </constraints>
                         </view>
                         <sections>
@@ -220,6 +220,7 @@
     <resources>
         <image name="CloudIcon.png" width="29" height="29"/>
         <image name="Cloud~iphone.png" width="198" height="132"/>
+        <image name="Lock~iphone.png" width="124" height="158"/>
     </resources>
     <classes>
         <class className="LCPasswordSetupController" superclassName="UITableViewController">
