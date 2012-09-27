@@ -1,6 +1,2 @@
 
-#import <UIKit/UIKit.h>
-
-@interface LCPasswordSetupController : UITableViewController <UITextFieldDelegate>
-
-@end
+@interface LCPasswordSetupController : UITableViewController <UITextFieldDelegate> @end

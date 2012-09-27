@@ -1,6 +1,6 @@
 
-#import "LCGradientView.h"
-#import "LCGradient.h"
+#import "View.h"
+#import "Utility.h"
 
 @implementation LCGradientView
 - (id)initWithFrame:(CGRect)frame {

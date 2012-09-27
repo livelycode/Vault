@@ -1,5 +1,5 @@
 
-#import "LCEntryDetailController.h"
+#import "Controller.h"
 
 @implementation LCEntryDetailController
 #pragma mark - UITableViewDataSource

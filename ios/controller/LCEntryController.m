@@ -1,13 +1,11 @@
 
-#import "LCEntryController.h"
-#import "LCEntryDetailController.h"
+#import "Controller.h"
 
 @implementation LCEntryController
 #pragma mark - Overriden
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
   if ([segue.identifier isEqualToString:@"EntryDetailModalSegue"]) {
-    id detailController = [segue.destinationViewController topViewController];
-    [detailController setModalMode:YES];
+
   }
 }
 

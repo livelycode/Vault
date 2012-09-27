@@ -1,6 +1,5 @@
 
-#import <Foundation/Foundation.h>
-#import "LCEncryptedData.h"
+@class LCEncryptedData;
 
 @interface LCSettingsStore : NSObject
 + (LCSettingsStore *)sharedSettingsStore;

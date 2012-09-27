@@ -1,5 +1,5 @@
 
-#import "LCCategoryDetailController.h"
+#import "Controller.h"
 
 @implementation LCCategoryDetailController
 #pragma mark - UITableViewDataSource

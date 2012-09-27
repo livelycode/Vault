@@ -1,8 +1,5 @@
 
-#import "LCEncryptedData.h"
-#import <CommonCrypto/CommonCryptor.h>
-#import <CommonCrypto/CommonKeyDerivation.h>
-#import <Security/SecRandom.h>
+#import "Store.h"
 
 @implementation LCEncryptedData {
   NSData *_salt;

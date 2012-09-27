@@ -1,14 +1,13 @@
 
-#import "LCLockController.h"
-#import "LCSettingsStore.h"
-#import "LCAppearance.h"
+#import "Controller.h"
+#import "Store.h"
 
 @implementation LCLockController
 #pragma mark - UITextFieldDelegate
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
   LCEncryptedData *encryptedPassword = [LCSettingsStore sharedSettingsStore].encryptedPassword;
   if ([encryptedPassword isEqualToPassword:textField.text]) {
-    [[LCAppDelegate sharedAppDelegate] unlock];
+    [[LCWindowController sharedAppDelegate] unlock];
   } else {
     textField.text = nil;
     [[[UIAlertView alloc] initWithTitle:@"foo" message:@"bar" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];

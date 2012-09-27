@@ -1,7 +1,5 @@
 
-#import "LCCategoryController.h"
-#import "LCCategoryDetailController.h"
-#import "LCAppearance.h"
+#import "Controller.h"
 
 @implementation LCCategoryController
 #pragma mark - Overriden
@@ -12,8 +10,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
   if ([segue.identifier isEqualToString:@"CategoryDetailModalSegue"]) {
-    id detailController = [segue.destinationViewController topViewController];
-    [detailController setModalMode:YES];
+
   }
 }
 

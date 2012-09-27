@@ -1,7 +1,7 @@
 
-#import "LCStorageSetupController.h"
-#import "LCSettingsStore.h"
-#import "LCAppearance.h"
+#import "Controller.h"
+#import "Store.h"
+#import "Utility.h"
 
 @implementation LCStorageSetupController {
   IBOutlet UITableViewCell *_cloudCell;

@@ -1,6 +1,2 @@
 
-#import <UIKit/UIKit.h>
-
-@interface LCCategoryController : UITableViewController
-
-@end
+@interface LCCategoryController : UITableViewController @end

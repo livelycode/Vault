@@ -1,5 +1,5 @@
 
-#import "LCSettingsStore.h"
+#import "Store.h"
 
 @implementation LCSettingsStore
 #pragma mark Class state

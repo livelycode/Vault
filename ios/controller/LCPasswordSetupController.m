@@ -1,7 +1,7 @@
 
-#import "LCPasswordSetupController.h"
-#import "LCSettingsStore.h"
-#import "LCAppearance.h"
+#import "Controller.h"
+#import "Store.h"
+#import "Utility.h"
 
 @implementation LCPasswordSetupController {
   IBOutlet UITextField *_passwordField;
